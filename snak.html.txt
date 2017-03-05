@@ -1,0 +1,5 @@
+<!Doctype html>
+<html>
+<title>Snak</title>
+<body></body>
+</html>
