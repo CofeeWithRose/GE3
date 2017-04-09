@@ -182,11 +182,34 @@ window.addEventListener("keyup",function(e){
   Input.up[e.key]=true;
 });
 
+var ResourceFactory=function(){
+    var source={};
+    var _getResource=function(type,src){
+
+        if (source[type]&&source[type][src]) {
+          return source[type][src];
+        }else {
+          if (!source[type]) {
+             source[type]={};
+          }
+          var temp=new window[type]();
+          temp.src=src;
+          source[type][src]=temp;
+          console.log("load resource");
+          return temp;
+        }
+    }
+    return{
+      getResource:_getResource
+    }
+};
+ResourceFactory=ResourceFactory();
+
 var Screen=function(){
    var _position={x:0,y:0};
    var canvas=document.getElementById("canvas");
-   canvas.width=window.innerWidth;
-   canvas.height=window.innerHeight;
+   canvas.width=canvas.clientWidth;
+   canvas.height=canvas.clientHeight;
    var context=canvas.getContext("2d");
    var fps=document.getElementById("FPS");
    var _draw=function(obj,x,y,w,h){
@@ -199,7 +222,8 @@ var Screen=function(){
       }    
    };
    var _clear=function(){
-     context.clearRect(0,0,innerWidth,innerHeight);
+     context.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+     
    }
    return{
    	position:_position,

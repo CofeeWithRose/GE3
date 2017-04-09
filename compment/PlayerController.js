@@ -10,11 +10,11 @@ function PlayerController(argument) {
 	};
 	this.update=function(){
 		
-		if (Input.a) {
+		if (Input.a||Input.A) {
 			trans.position.x-=_pro.v.x;
 			trans.scale.x=1;
 			anima.play("run");
-		}else if(Input.d){
+		}else if(Input.d||Input.D){
 			trans.position.x+=_pro.v.x;
 			trans.scale.x=-1;
 			anima.play("run");

@@ -14,6 +14,7 @@ function Animation(){
       render=trans.getCompment("Render");
 	};
 	this.update=function(){
+
 		if (anim&&anim.length>0) {
 			if (Time.frameCount%_pro.speed==0) {
 			   count++;
@@ -25,9 +26,7 @@ function Animation(){
 	this.setAnimation=function(name,num,path){
 	    var list=[];
         for (var i = num ; i >0; i--) {
-      	   var img=new Image();
-      	   img.src=path+"/"+name+i+".png";
-           list.push(img);
+           list.push(ResourceFactory.getResource("Image",path+"/"+name+i+".png"));
         }
         _pro.imageMap[name]=list;
 	};
@@ -50,13 +49,13 @@ function Animation(){
         	_pro.imageMap[names[i]]=[];
         	for (var j = imgList.length - 1; j >= 0; j--) {
         		if(imgList[j]){
-        			var img=new Image();
-	        		img.src=(imgList[j].src);
-	        		_pro.imageMap[names[i]].push(img);
+	        		_pro.imageMap[names[i]].push(ResourceFactory.getResource("Image",imgList[j].src));
         		}
         	
         	}
         }
+        names=null;
+        imgList=null;
 	};
 
 };
