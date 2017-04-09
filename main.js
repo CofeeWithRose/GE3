@@ -21,11 +21,10 @@
    player2.addCompment(new PlayerController());
    player2.getCompment("Transform").position={x:200,y:0};
    player2.setChild(player);
-  // localStorage._GE = Util.stringify(player2);
-   
+   //localStorage._GE = Util.stringify(player2);
+   //document.write(Util.stringify(player2));
   // GE.instantGameObject(player);
    GE.instantGameObject(player2);
-          console.log(player2);
 });
 })();
 

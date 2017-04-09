@@ -48,14 +48,14 @@ function Animation(){
         	var imgList=map[names[i]];
         	_pro.imageMap[names[i]]=[];
         	for (var j = imgList.length - 1; j >= 0; j--) {
-        		var img=new Image();
-        		img.src=(imgList[j].src);
-        		_pro.imageMap[names[i]].push(img);
+        		if(imgList[j]){
+        			var img=new Image();
+	        		img.src=(imgList[j].src);
+	        		_pro.imageMap[names[i]].push(img);
+        		}
+        	
         	}
         }
 	};
-	this.getImageMap=function(){
-		return _pro.imageMap;
-	}
 
 }

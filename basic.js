@@ -76,7 +76,6 @@ Compment.prototype.setName = function(val) {
 };
 
 function Transform(){
-  this.id=Util.guid();
 /*  console.log("trans id : "+this.id);*/
   this.compmentMap;
     this.name="Transform";
@@ -121,8 +120,8 @@ var Util=function(){
           }
         };
 
-        var str=JSON.stringify(obj,replacer).replace(/"_":1/g,"");
-
+        var str=JSON.stringify(obj,replacer).replace(/"_":1/g,"").replace(/,}/g,"}");
+         
         for (var i = record.length - 1; i >= 0; i--) {
            delete record[i]._;
         };
@@ -153,7 +152,7 @@ var Input=function(){
      return Input.down.key;
   };
    var _getKeyUp=function(key){
-     return Input.up.key;
+     return Input.up[key];
   };
 return{
   getKeyDown:_getKeyDown,
@@ -300,9 +299,8 @@ var GE=function () {
         		_insGamObj(obj.children[children[i]]);
         	}
           }else{
-	        throw obj +"is not a GameObject";
+	          throw obj +"is not a GameObject";
           }
-
        /*console.log("x: "+obj.getCompment("Transform").position.x);*/
     };
     var checkName=function(obj){
@@ -320,7 +318,6 @@ var GE=function () {
        	  }else{
             num=1;
           }
-
               name+="("+num+")";
               obj.name=name;
        }

@@ -1,5 +1,5 @@
 (function function_name(argument) {
-var data=JSON.parse(localStorage._GE.replace(/,}/g,"}"));
+var data=JSON.parse(localStorage._GE);
 function _getDepenList(data){
 
   var getDependence=function(gameObject,reult){
@@ -28,9 +28,9 @@ function _buildCompment(obj,compMap){
 
       for (var j =compAttrs.length - 1; j >= 0; j--) {
         var setMethodName="set"+compAttrs[j][0].toUpperCase()+compAttrs[j].substr(1);
-        //console.log(setMethodName+": "+newComp[setMethodName]);
+       // console.log(setMethodName+": "+newComp[setMethodName]);
         newComp[setMethodName](compMap[compNames[i]][compAttrs[j]]);
-/*        console.log(setMethodName+": ");
+/*       console.log(setMethodName+": ");
          console.log(compMap[compNames[i]][compAttrs[j]]);*/
       }
       obj.addCompment(newComp);
