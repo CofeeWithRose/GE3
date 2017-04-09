@@ -29,14 +29,14 @@
     r.setSize({w:50,h:50});
 
     var anima2=player2.addCompment(new Animation());
-    anima2.setAnimation("run",6,"image/player2");
+    anima2.setAnimation("run",5,"image/player2");
     anima2.setAnimation("stand",1,"image/player2");
     anima2.setSpeed(5);
     player2.addCompment(new PlayerController());
     player2.getCompment("Transform").position.x=x;
     player2.getCompment("Transform").position.y=y;
     stage.setChild(player2);
-     x+=40;
+     x+=45;
   }
 
 GE.instantGameObject(stage);
