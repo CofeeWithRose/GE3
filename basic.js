@@ -42,7 +42,7 @@ GameObject.prototype.setParent=function(parentObj){
 		throw parentObj +" is not a GameObject";
 	}
 	if (this.name) {
-		 parentObj.children[this.name]=this;
+		 parentObj.children[this.id]=this;
 	}
   
 };
@@ -51,8 +51,8 @@ GameObject.prototype.setChild=function(obj){
   if (!(obj instanceof GameObject)) {
     throw obj +" is not a GameObject";
   }
-  if (obj.name) {
-     this.children[obj.name]=obj;
+  if (obj.id) {
+     this.children[obj.id]=obj;
   }
   
 };
@@ -126,9 +126,13 @@ var Util=function(){
         };
         return str;
     };
+    function _parseInt(number) {
+    return number*1 | 0 || 0;
+}
     return {
       stringify:_stringify,
-      guid:_guid
+      guid:_guid,
+      parseInt:_parseInt
     }
 };
 Util=Util();
@@ -138,12 +142,14 @@ var Time={
     startTime:0,
     delTime:0,
     lastTime:0,
+    gamTime:0,
     update:function(){
         var now=new Date().getTime();
          Time.frameCount++;
          Time.delTime=now-Time.lastTime;
          Time.lastTime=now;
-   }
+         Time.gamTime=now-Time.startTime;
+    }
  
 };
 var Input=function(){
@@ -187,8 +193,9 @@ var Screen=function(){
         context.drawImage(obj,x,y,w,h);
    }
    var _showFps=function(){
-     if (Time.frameCount%100==0) {
-          fps.innerHTML=Number.parseInt(1000/Time.delTime);
+
+     if (Time.frameCount%100==1) {
+          fps.innerHTML=Util.parseInt(1000/Time.delTime);
       }    
    };
    var _clear=function(){
@@ -264,7 +271,8 @@ var GE=function () {
          awakeTask=[];
          Time.update();
          Screen.showFps();
-         requestAnimationFrame(prosessGame);
+        requestAnimationFrame(prosessGame);
+        //setTimeout(prosessGame, 40);
          Screen.clear();
 
          doUpdate();
@@ -284,6 +292,7 @@ var GE=function () {
         		task[j]();
         	}
         }
+        nowTask=null;
     };
     
 
@@ -319,7 +328,7 @@ var GE=function () {
        	  if (num) {
               num=num[num.length-1];
        	  	  name-=num;
-              num=1+Number.parseInt(num.match(/[\d]{1,1000}/)[0],10);
+              num=1+Util.parseInt(num.match(/[\d]{1,1000}/)[0],10);
        	  }else{
             num=1;
           }
@@ -333,6 +342,7 @@ var GE=function () {
         for (var i = compList.length - 1; i >= 0; i--) {
         	tasks.push(obj.compmentMap[compList[i]][type]);
         }
+        compList=null;
         return tasks;
     };
     var combineList=function(listA,listB){

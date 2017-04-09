@@ -9,11 +9,7 @@ function PlayerController(argument) {
 		anima=trans.getCompment("Animation");
 	};
 	this.update=function(){
-		if (Input.getKeyUp("m")&&trans.gameObject.name==="player2") {
-			localStorage._GE = Util.stringify(trans.gameObject);
-			/*document.write(localStorage._GE);*/
-			alert("save successfuly!");
-		}
+		
 		if (Input.a) {
 			trans.position.x-=_pro.v.x;
 			trans.scale.x=1;
