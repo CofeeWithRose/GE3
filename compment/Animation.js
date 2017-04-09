@@ -42,6 +42,7 @@ function Animation(){
 	this.setSpeed=function(v){
 		_pro.speed=v;
 	};
+
 	this.setImageMap=function(map){
 		var names=Object.keys(map);
         for (var i = names.length - 1; i >= 0; i--) {
@@ -58,4 +59,4 @@ function Animation(){
         }
 	};
 
-}
+};

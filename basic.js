@@ -18,7 +18,6 @@ GameObject.prototype.getChildByName=function(name){
 	return children[name];
 };
 GameObject.prototype.addCompment = function(compment) {
-
 	if (!(compment instanceof Compment)) {
         throw compment +" is not a compment";
 	}else if (!compment.name){
@@ -148,14 +147,10 @@ var Time={
  
 };
 var Input=function(){
-  var _getKeyDown=function(key){
-     return Input.down.key;
-  };
    var _getKeyUp=function(key){
      return Input.up[key];
   };
 return{
-  getKeyDown:_getKeyDown,
   getKeyUp:_getKeyUp
 }
 };
@@ -222,7 +217,7 @@ var GE=function () {
     var _import=function (nameList) {
     	for (var i = nameList.length - 1; i >= 0; i--) {
     		var filename=nameList[i];
-    		if (!(impMap[filename]||window[filename])) {
+    		if (!(impMap[filename]||(window[filename] instanceof Compment))) {
     			impMap[filename]=filename;
           loadScript(filename);
     		}
@@ -268,11 +263,12 @@ var GE=function () {
          startTask=[];
          awakeTask=[];
          Time.update();
-         Input.update();
+         Screen.showFps();
          requestAnimationFrame(prosessGame);
          Screen.clear();
-          Screen.showFps();
+
          doUpdate();
+         Input.update();
     };
 
     var doOnceTask=function(taskList){
