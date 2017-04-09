@@ -187,16 +187,23 @@ var Screen=function(){
    canvas.width=window.innerWidth;
    canvas.height=window.innerHeight;
    var context=canvas.getContext("2d");
+   var fps=document.getElementById("FPS");
    var _draw=function(obj,x,y,w,h){
         context.drawImage(obj,x,y,w,h);
    }
+   var _showFps=function(){
+     if (Time.frameCount%100==0) {
+          fps.innerHTML=Number.parseInt(1000/Time.delTime);
+      }    
+   };
    var _clear=function(){
      context.clearRect(0,0,innerWidth,innerHeight);
    }
    return{
    	position:_position,
    	draw:_draw,
-    clear:_clear
+    clear:_clear,
+    showFps:_showFps
    }
 };
 Screen=Screen();
@@ -255,15 +262,17 @@ var GE=function () {
     };
 
     var prosessGame=function(){
+         
          doOnceTask(awakeTask);
          doOnceTask(startTask);
          startTask=[];
          awakeTask=[];
-         Screen.clear();
-         doUpdate();
          Time.update();
          Input.update();
-        requestAnimationFrame(prosessGame);
+         requestAnimationFrame(prosessGame);
+         Screen.clear();
+          Screen.showFps();
+         doUpdate();
     };
 
     var doOnceTask=function(taskList){

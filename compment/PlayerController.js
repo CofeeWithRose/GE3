@@ -14,7 +14,6 @@ function PlayerController(argument) {
 			/*document.write(localStorage._GE);*/
 			alert("save successfuly!");
 		}
-		
 		if (Input.a) {
 			trans.position.x-=_pro.v.x;
 			trans.scale.x=1;
