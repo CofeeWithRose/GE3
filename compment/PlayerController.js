@@ -11,7 +11,8 @@ function PlayerController(argument) {
 	this.update=function(){
 		if (Input.getKeyUp("m")&&trans.gameObject.name==="player2") {
 			localStorage._GE = Util.stringify(trans.gameObject);
-			alert("save successful!");
+			/*document.write(localStorage._GE);*/
+			alert("save successfuly!");
 		}
 		
 		if (Input.a) {

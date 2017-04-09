@@ -104,20 +104,20 @@ var Util=function(){
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
         return v.toString(16);
       });
-    }
+    };
     function _stringify(obj){
        var record=[];
+
        function replacer(key,value){
-          if(!value._){
+          if(value instanceof Image){
+              value={src:value.src};
+          }else if(!value._){
              value._=1;
              record.push(value);
-             if(value instanceof Image){
-                value={src:value.src};
-             }
-              return value;
           }else{
             return undefined;
           }
+           return value;
         };
 
         var str=JSON.stringify(obj,replacer).replace(/"_":1/g,"").replace(/,}/g,"}");
@@ -215,7 +215,7 @@ var GE=function () {
     var _import=function (nameList) {
     	for (var i = nameList.length - 1; i >= 0; i--) {
     		var filename=nameList[i];
-    		if (!impMap[filename]) {
+    		if (!(impMap[filename]||window[filename])) {
     			impMap[filename]=filename;
           loadScript(filename);
     		}
