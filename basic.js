@@ -195,7 +195,7 @@ var ResourceFactory=function(){
           var temp=new window[type]();
           temp.src=src;
           source[type][src]=temp;
-          console.log("load resource");
+         // console.log("load resource");
           return temp;
         }
     }
@@ -208,9 +208,9 @@ ResourceFactory=ResourceFactory();
 var Screen=function(){
    var _position={x:0,y:0};
    var canvas=document.getElementById("canvas");
-   canvas.width=canvas.clientWidth;
+/*   canvas.width=canvas.clientWidth;
    canvas.height=canvas.clientHeight;
-   var context=canvas.getContext("2d");
+*/   var context=canvas.getContext("2d");
    var fps=document.getElementById("FPS");
    var _draw=function(obj,x,y,w,h){
         context.drawImage(obj,x,y,w,h);
@@ -234,6 +234,92 @@ var Screen=function(){
 };
 Screen=Screen();
 
+var HitManager=function HitManager(){
+
+   var borderMap={};
+   var hiterMap={};
+
+   var onHitTaskMap={};
+   var onHitedTaskMap={};
+
+   var borderList=[];
+   var hiterList=[];
+
+   var _registBorder=function _registBorder(boderList,trans,isHiter){
+        var typeMap;
+        var taskMap;
+        var taskname;
+        if (isHiter) {
+            taskMap=onHitTaskMap;
+            typeMap=borderMap;
+            taskname="onHit";
+        }else{
+            taskMap=onHitedTaskMap;
+            typeMap=hiterMap;
+            taskname="onHitted";
+        }
+        
+        var typeList=[];
+        for (var i = boderList.length - 1; i >= 0; i--) {
+          var border=boderList[i];
+          border.id=trans.gameObject.id;
+          typeList.push(border);
+        }
+        typeMap[trans.gameObject.id]=typeList;
+
+        var compmentMap=trans.gameObject.compmentMap;
+        var compNames=Object.keys(compmentMap);
+        var onHitTaskList=[];
+        for (var i = compNames.length - 1; i >= 0; i--) {
+             var hitFn=compmentMap[compNames[i]][taskname];
+
+           if(hitFn){
+             hitFn();
+              onHitTaskList.push(hitFn);
+           }
+        }
+
+        taskMap[trans.gameObject.id]=onHitTaskList;
+        refreshHitList();
+   };
+
+   var refreshHitList=function refreshHitList(){
+      boderList=[];
+      hiterList=[];
+
+      var borders=Object.keys(borderMap);
+      var hiters=Object.keys(hiterMap);
+      for (var i = borders.length - 1; i >= 0; i--) {
+        boderList.push(borderMap[borders[i]]);
+      }
+      for (var i = hiters.length - 1; i >= 0; i--) {
+        hiterList.push(hiterMap[hiters[i]]);
+      }
+
+   };
+
+
+   //after hited ,hiterBoder add attribuilt named position which record the position of the object hitting.
+   //at same time ,border also add attribuilt named position which record the position that objet hited it.
+   var onHit=function(hiterBorder,border){
+      var hitTrans=GE.findGameObjectById(hiterBorder.id).getCompment("Transform");
+      var borderTrans=GE.findGameObjectById(border.id).getCompment("Transform");
+      var resultHitFns=hiterMap[hiterBorder.id];
+      var resultHitedFns=borderMap[boder.id];
+      for (var i = resultHitFns.length - 1; i >= 0; i--) {
+        resultHitFns[i](border.position,borderTrans);
+      }
+      for (var i = resultHitedFns.length - 1; i >= 0; i--) {
+        resultHitedFns[i](hiterBorder.position,borderTrans);
+      }
+   };
+  return{
+    registBorder:_registBorder
+  }
+
+};
+HitManager=HitManager();
+
 var GE=function () {
 
 	var impMap={Transform:"Transform"};
@@ -243,7 +329,8 @@ var GE=function () {
 
     var awakeTask=[];
     var startTask=[];
-    var updateTask={};
+    var updateTask=[];
+    var updateTaskMap={};
 
     var _import=function (nameList) {
     	for (var i = nameList.length - 1; i >= 0; i--) {
@@ -308,28 +395,33 @@ var GE=function () {
         	taskList[i]();
         }
     };
-    var doUpdate=function(){
-    	var nowTask=Object.keys(updateTask);
-        for (var i = nowTask.length - 1; i >= 0; i--) {
-        	var task=updateTask[nowTask[i]];
-        	for (var j = task.length - 1; j >= 0; j--) {
-        		task[j]();
-        	}
+    var doUpdate=function doUpdate(){
+        for (var i = updateTask.length - 1; i >= 0; i--) {
+           updateTask[i]();
         }
+    };
+    var refreshUpdateTask=function(){
+        updateTask=[];
+        var nowTask=Object.keys(updateTaskMap);
+          for (var i = nowTask.length - 1; i >= 0; i--) {
+            var task=updateTaskMap[nowTask[i]];
+            for (var j = task.length - 1; j >= 0; j--) {
+              updateTask.push(task[j]);
+            }
+          }
         nowTask=null;
     };
     
-
+    var _findGameObjectById=function(id){
+        return gameObjMap[id];
+    };
     var _insGamObj=function(obj){
-
           if (obj instanceof GameObject) {
           	checkName(obj);
-          	if (!obj.parent) {
-          		gameObjMap[obj.name]=obj;
-          	}
+          	gameObjMap[obj.id]=obj;
           	combineList(awakeTask,getTaskList(obj,"awake"));
             combineList(startTask,getTaskList(obj,"start"));
-            updateTask[obj.id]=getTaskList(obj,"update");
+            updateTaskMap[obj.id]=getTaskList(obj,"update");
 
             var children=Object.keys(obj.children);
         	for (var i = children.length - 1; i >= 0; i--) {
@@ -339,6 +431,7 @@ var GE=function () {
           }else{
 	          throw obj +"is not a GameObject";
           }
+          refreshUpdateTask();
        /*console.log("x: "+obj.getCompment("Transform").position.x);*/
     };
     var checkName=function(obj){
@@ -378,7 +471,8 @@ var GE=function () {
 	return {
 		import:_import,
 		start:_startGame,
-		instantGameObject:_insGamObj
+		instantGameObject:_insGamObj,
+    findGameObjectById:_findGameObjectById
 	};
 };
 GE=GE();

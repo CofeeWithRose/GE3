@@ -24,5 +24,8 @@ function PlayerController(argument) {
 	};
 	this.setV=function(val){
         _pro.v=val;
-	}
+	};
+	this.onHitted=function onHit(){
+      
+	};
 }

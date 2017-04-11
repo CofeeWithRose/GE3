@@ -4,16 +4,17 @@ body{
 	background: gray;
 	height: 100%;
 	padding:0;
+	text-align: center;
 }
 .fps{
 	position: absolute;
 	right:10px;
 }
 canvas{
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 99%
+	margin:0 auto;
+	padding: auto;
+	width: 500px;
+	height:400px;
 }
 html{
 	width: 100%;

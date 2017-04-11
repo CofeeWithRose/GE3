@@ -25,10 +25,10 @@ function Render() {
 	};
 	this.update=function(){
 		if(_pro.image){
-			if (imageChanged||
+			if ((imageChanged||
 				scale.x!=trans.scale.x||
 				scale.y!=trans.scale.y||
-				trans.rotation!=rotation) 
+				trans.rotation!=rotation)&&_pro.image.width)
 				{ //if the info changed redraw the image
 				context.clearRect(0,0,_pro.size.w,_pro.size.h);
 				context.save();

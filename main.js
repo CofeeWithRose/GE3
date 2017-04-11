@@ -1,5 +1,5 @@
 (function(){
-  GE.start(["Render","Animation","PlayerController","Collider","Rigidbody"],function(){
+  GE.start(["Render","Animation","PlayerController","HitBorder","Rigidbody"],function(){
 
    var player=new GameObject();
    player.name="player";
@@ -22,19 +22,20 @@
   // GE.instantGameObject(player);
   for (var i = 250; i >= 0; i--) {
 
-    if (x>26*50) {y+=80;x=0};
+    if (x>10*50) {y+=50;x=0};
     var player2=new GameObject();
     player2.name="player2";
     var r=player2.addCompment(new Render());
     r.setSize({w:50,h:50});
 
     var anima2=player2.addCompment(new Animation());
-    anima2.setAnimation("run",5,"image/player2");
+    anima2.setAnimation("run",7,"image/player2");
     anima2.setAnimation("stand",1,"image/player2");
     anima2.setSpeed(5);
     player2.addCompment(new PlayerController());
     player2.getCompment("Transform").position.x=x;
     player2.getCompment("Transform").position.y=y;
+    player2.addCompment(new HitBorder());
     stage.setChild(player2);
      x+=45;
   }
