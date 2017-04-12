@@ -208,9 +208,9 @@ ResourceFactory=ResourceFactory();
 var Screen=function(){
    var _position={x:0,y:0};
    var canvas=document.getElementById("canvas");
-/*   canvas.width=canvas.clientWidth;
+   canvas.width=canvas.clientWidth;
    canvas.height=canvas.clientHeight;
-*/   var context=canvas.getContext("2d");
+   var context=canvas.getContext("2d");
    var fps=document.getElementById("FPS");
    var _draw=function(obj,x,y,w,h){
         context.drawImage(obj,x,y,w,h);

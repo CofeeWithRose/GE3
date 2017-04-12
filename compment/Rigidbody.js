@@ -8,7 +8,7 @@ function Rigidbody() {
 	this.update=function(){
 		if (Input.getKeyUp("m")&&trans.gameObject.name==="stage") {
 			localStorage._GE = Util.stringify(trans.gameObject);
-			//document.write(localStorage._GE);
+			document.write(localStorage._GE);
 			alert("save successfuly!");
 		}
 	}

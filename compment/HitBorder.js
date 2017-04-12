@@ -17,6 +17,7 @@ function HitBorder() {
        if (_pro.borderList.length==0&&render) {
        	   _pro.addRectBorder(0,0,render.size.w,render.size.h);
        }
+       HitManager.registBorder(_pro.borderList,trans,_pro.isHiter);
 
 	};
 	this.addRectBorder=function(x,y,w,h){
@@ -31,7 +32,6 @@ function HitBorder() {
 
 	this.setBorderList=function(list){
         _pro.borderList=list;
-        HitManager.registBorder(_pro.borderList,trans,_pro.isHiter);
 	};
 	this.setIsHiter=function(bool){
 		_pro.isHiter=bool;

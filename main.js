@@ -20,14 +20,13 @@
    //localStorage._GE = Util.stringify(player2);
    //document.write(Util.stringify(player2));
   // GE.instantGameObject(player);
-  for (var i = 250; i >= 0; i--) {
+  for (var i = 200; i >= 0; i--) {
 
     if (x>10*50) {y+=50;x=0};
     var player2=new GameObject();
     player2.name="player2";
     var r=player2.addCompment(new Render());
     r.setSize({w:50,h:50});
-
     var anima2=player2.addCompment(new Animation());
     anima2.setAnimation("run",7,"image/player2");
     anima2.setAnimation("stand",1,"image/player2");
