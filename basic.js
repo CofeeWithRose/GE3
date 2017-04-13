@@ -235,7 +235,7 @@ var Screen=function(){
 Screen=Screen();
 
 var HitManager=function HitManager(){
-
+   var woeker=new Worker("Worker/hitTest.js");
    var borderMap={};
    var hiterMap={};
 
@@ -244,6 +244,8 @@ var HitManager=function HitManager(){
 
    var borderList=[];
    var hiterList=[];
+
+
 
    var _registBorder=function _registBorder(boderList,trans,isHiter){
         var typeMap;
@@ -281,6 +283,13 @@ var HitManager=function HitManager(){
 
         taskMap[trans.gameObject.id]=onHitTaskList;
         refreshHitList();
+   };
+
+   var _update=function hitUpdate(){
+      var req={};
+      req.border=borderList;
+      req.hiter=hiterList;
+      woeker.postMessage(req);
    };
 
    var refreshHitList=function refreshHitList(){

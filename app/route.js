@@ -4,7 +4,6 @@ exports.start = function(){
     http.createServer(function(request, response) {
 
     	var url=".."+request.url;
-
         fs.readFile(url, '',function (err, data) {
 
             if (err){
