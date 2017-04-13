@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>dasd</title>
+</head>
+<script type="text/javascript">
+	var a=new Worker("worker.js");
+	a.onmessage=function function_name(e) {
+		document.write(new Date().getTime()+":"+ e.data+"<br>");
+		a.postMessage(e.data);
+	}
+	a.postMessage(1);
+</script>
+<body>
+asdad
+<div>sadad</div>
+</body>
+</html>
