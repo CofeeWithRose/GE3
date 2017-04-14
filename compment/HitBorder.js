@@ -7,31 +7,35 @@ function HitBorder() {
 	var trans;
 	var render;
 	this.layer=-1;
-    this.borderList=[];
+    this.border={};
     
     this.isHiter=false;
 
 	this.start=function(){
+
        trans=_pro.transform;
        render=trans.getCompment("Render");
-       if (_pro.borderList.length==0&&render) {
-       	   _pro.addRectBorder(0,0,render.size.w,render.size.h);
+
+       if (!_pro.border.position) {
+	   		_pro.border.position={x:0,y:0};
+   		}
+   		if (!_pro.border.size) {
+   			_pro.border.size=render.size;
+   		}
+   		_pro.border.transPosition=trans.position;
+   		_pro.border.id=trans.gameObject.id;
+   		
+        HitManager.registBorder(_pro.border,_pro.isHiter);
+
+	};
+
+	this.setBorder=function(x,y,w,h){
+       if (x instanceof Object) {
+       	  _pro.border=x;
+       }else{
+       	 _pro.border.position={x:x,y:y};
+	     _pro.border.size={w:w,h:h};
        }
-       HitManager.registBorder(_pro.borderList,trans,_pro.isHiter);
-
-	};
-	this.addRectBorder=function(x,y,w,h){
-       _pro.borderList.push({x:x,y:y,w:w,h:h});
-       HitManager.registBorder(_pro.borderList,trans,_pro.isHiter);
-	};
-	this.addRoundBorder=function(x,y,r){
-        _pro.borderList.push({x:x,y:y,r:r});
-        HitManager.registBorder(_pro.borderList,trans,_pro.isHiter);
-	};
-
-
-	this.setBorderList=function(list){
-        _pro.borderList=list;
 	};
 	this.setIsHiter=function(bool){
 		_pro.isHiter=bool;

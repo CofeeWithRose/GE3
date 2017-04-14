@@ -240,73 +240,68 @@ var HitManager=function HitManager(){
    var hiterMap={};
 
    var onHitTaskMap={};
-   var onHitedTaskMap={};
 
    var borderList=[];
    var hiterList=[];
 
 
 
-   var _registBorder=function _registBorder(boderList,trans,isHiter){
-        var typeMap;
-        var taskMap;
-        var taskname;
-        if (isHiter) {
-            taskMap=onHitTaskMap;
-            typeMap=borderMap;
-            taskname="onHit";
-        }else{
-            taskMap=onHitedTaskMap;
-            typeMap=hiterMap;
-            taskname="onHitted";
-        }
-        
-        var typeList=[];
-        for (var i = boderList.length - 1; i >= 0; i--) {
-          var border=boderList[i];
-          border.id=trans.gameObject.id;
-          typeList.push(border);
-        }
-        typeMap[trans.gameObject.id]=typeList;
+   var _registBorder=function _registBorder(border,isHiter){
 
-        var compmentMap=trans.gameObject.compmentMap;
+        if (isHiter) {
+          hiterList.push(border);
+          hiterMap[border.id]=border;
+        }else{
+           borderList.push(border);
+           borderMap[border.id]=border;
+        }
+        var gameObject=GE.findGameObjectById(border.id);
+        var compmentMap=gameObject.compmentMap;
         var compNames=Object.keys(compmentMap);
+
         var onHitTaskList=[];
         for (var i = compNames.length - 1; i >= 0; i--) {
-             var hitFn=compmentMap[compNames[i]][taskname];
+             var hitFn=compmentMap[compNames[i]][isHiter? "onHit":"onHitted"];
 
            if(hitFn){
-             hitFn();
+
               onHitTaskList.push(hitFn);
            }
         }
 
-        taskMap[trans.gameObject.id]=onHitTaskList;
-        refreshHitList();
+        onHitTaskMap[gameObject.id]=onHitTaskList;
+   };
+
+   var _cancellBorder=function _cancellBordrt(id){
+
+      if (borderMap[id]) {
+        borderList.splice(borderList.indexOf(borderMap[id]),1);
+        delete  onHitTaskMap[id];
+        delete borderMap[id];
+      }
+      if (hiterMap[id]) {
+          hiterList.splice(hiterList.indexOf(hiterMap[id]),1);
+        delete  onHitTaskMap[id];
+        delete hiterMap[id];
+      }
+        
    };
 
    var _update=function hitUpdate(){
+    console.log("send req..");
       var req={};
       req.border=borderList;
       req.hiter=hiterList;
       woeker.postMessage(req);
-   };
-
-   var refreshHitList=function refreshHitList(){
-      boderList=[];
-      hiterList=[];
-
-      var borders=Object.keys(borderMap);
-      var hiters=Object.keys(hiterMap);
-      for (var i = borders.length - 1; i >= 0; i--) {
-        boderList.push(borderMap[borders[i]]);
+      woeker.onMessage=function onHitPPross(e){
+        console.log("hit test");
+        var resu=e.data;
+        for (var i = resu.length - 1; i >= 0; i--) {
+           onHit(resu[i].hiter,resu.border);
+        }
+         
       }
-      for (var i = hiters.length - 1; i >= 0; i--) {
-        hiterList.push(hiterMap[hiters[i]]);
-      }
-
    };
-
 
    //after hited ,hiterBoder add attribuilt named position which record the position of the object hitting.
    //at same time ,border also add attribuilt named position which record the position that objet hited it.
@@ -323,7 +318,9 @@ var HitManager=function HitManager(){
       }
    };
   return{
-    registBorder:_registBorder
+    registBorder:_registBorder,
+    cancellBorder:_cancellBorder,
+    update:_update
   }
 
 };
@@ -384,7 +381,7 @@ var GE=function () {
     };
 
     var prosessGame=function(){
-         
+        HitManager.update();
          doOnceTask(awakeTask);
          doOnceTask(startTask);
          startTask=[];
@@ -397,6 +394,7 @@ var GE=function () {
 
          doUpdate();
          Input.update();
+
     };
 
     var doOnceTask=function(taskList){

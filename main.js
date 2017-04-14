@@ -3,7 +3,8 @@
 
    var player=new GameObject();
    player.name="player";
-   player.addCompment(new Render());
+   var r=player.addCompment(new Render());
+   r.setSize({w:50,h:50});
    var anima1=player.addCompment(new Animation());
     anima1.setAnimation("run",4,"image/player1");
     anima1.setAnimation("stand",1,"image/player1");
@@ -22,7 +23,7 @@
   // GE.instantGameObject(player);
   for (var i = 200; i >= 0; i--) {
 
-    if (x>10*50) {y+=50;x=0};
+    if (x>25*50) {y+=50;x=0};
     var player2=new GameObject();
     player2.name="player2";
     var r=player2.addCompment(new Render());
