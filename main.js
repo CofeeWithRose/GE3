@@ -24,10 +24,18 @@
      var mapB2=new GameObject();
      mapB2.name="ground2";
      var border=mapB2.addCompment(new HitBorder());
-     border.isShow=true;
+     border.isShow=false;
      border.setBorder(0,0,160,5);
      stage.setChild(mapB2);
      var trans=mapB2.getCompment('Transform').position={x:865,y:mapTrans.y+105};
+
+    var mapB3=new GameObject();
+     mapB3.name="ground3";
+     var border=mapB3.addCompment(new HitBorder());
+     border.isShow=false;
+     border.setBorder(0,0,250,5);
+     stage.setChild(mapB3);
+     var trans=mapB3.getCompment('Transform').position={x:1156,y:mapTrans.y+105};
 
 
    

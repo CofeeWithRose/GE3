@@ -5,9 +5,9 @@ function Stage() {
        trans=this.transform;
 	};
 	this.update=function(){
-		if (Input.getKeyUp("m")&&trans.gameObject.name==="stage") {
+		if (Input.getKeyUp("m")) {
 			localStorage._GE = Util.stringify(trans.gameObject);
-			document.write(localStorage._GE);
+			//document.write(localStorage._GE);
 			alert("save successfuly!");
 		}
 		if (Input.r||Input.R) {

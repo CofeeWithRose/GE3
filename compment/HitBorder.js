@@ -6,6 +6,7 @@ function HitBorder() {
 	var trans;
 	var render;
   var rTrans;
+
 	this.layer=-1;
   this.border={};
   this.isShow=false;
@@ -73,4 +74,7 @@ function HitBorder() {
 	this.setLayer=function(layer){
       this.layer=layer;
 	};
+  this.setIsShow=function(bool){
+     isShow=bool;
+  };
 }

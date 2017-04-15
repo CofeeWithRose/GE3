@@ -10,41 +10,40 @@ function PlayerController(argument) {
 	var isOnGround=false;
 	this.start=function(){
 		trans=this.transform;
+		trans.scale.x=-1;
 		anima=trans.getCompment("Animation");
         size=trans.getCompment("Render").size;
         anima.play("stand");
 	};
 	this.update=function(){
+	
+		if (Input.a||Input.A) {
 
-	 	if (isOnGround) {
-	 		
-			if (Input.a||Input.A) {
+			//trans.position.x-=this.v.x;
+			this.v.x=-this.V;
+			trans.scale.x=1;
+			anima.play("run");
+		}else if(Input.d||Input.D){
 
-				//trans.position.x-=this.v.x;
-				this.v.x=-this.V;
-				trans.scale.x=1;
-				anima.play("run");
-			}else if(Input.d||Input.D){
+			//trans.position.x+=this.v.x;
+			this.v.x=this.V;
+			trans.scale.x=-1;
+			anima.play("run");
+		}else if(Input.w||Input.W){
+			this.v.x=0;
+            anima.play("up90");
+		}else if (Input.s||Input.S) {
+			this.v.x=0;
+			anima.play("down");
+		}else{
+			this.v.x=0;
+			anima.play("stand");
+		}
 
-				//trans.position.x+=this.v.x;
-				this.v.x=this.V;
-				trans.scale.x=-1;
-				anima.play("run");
-			}else if(Input.w||Input.W){
-				this.v.x=0;
-	            anima.play("up90");
-			}else if (Input.s||Input.S) {
-				this.v.x=0;
-				anima.play("down");
-			}else{
-				this.v.x=0;
-				anima.play("stand");
-			}
-
-			if (Input.getKeyUp(" ")) {
+		if (isOnGround) {
+			if (Input.k||Input.K) {
                this.v.y=-10;
 			}
-
 		}else {
       	  this.a.y=0.5;
       	  rotate.apply(this);
@@ -53,10 +52,6 @@ function PlayerController(argument) {
 	    this.v.y+=this.a.y;
         trans.position.y+=this.v.y;
         trans.position.x+=this.v.x;
-	};
-
-	this.setV=function(val){
-        this.v=val;
 	};
 
 	this.onHit=function onHit(other){
@@ -75,4 +70,11 @@ function PlayerController(argument) {
         anima.play("jump");
         trans.rotation-=15*trans.scale.x;
 	};
+
+	this.setV=function(val){
+        this.v=val;
+	};
+	this.setA=function(val){
+		this.a=val;
+	}
 }

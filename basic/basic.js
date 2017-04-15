@@ -259,7 +259,7 @@ var HitManager=function HitManager(){
         }
 
          for (var i = resuLeave.length - 1; i >= 0; i--) {
-           onLeave(resuLeave[i].hiter,resuLeave[i].border);
+           onLeaveTaskMap(resuLeave[i].hiter,resuLeave[i].border);
         }
 
         onLeave
@@ -441,19 +441,25 @@ var GE=function () {
         return gameObjMap[id];
     };
     var _addTask=function(obj,compment){
-           
+        
         if (!gameObjMap[obj.id]) {
           checkName(obj);
           gameObjMap[obj.id]=obj;
         }
+
+        if (!updateTaskMap[obj.id]) {
+          updateTaskMap[obj.id]={};
+        }else if (updateTaskMap[obj.id][compment.name]) {
+          //不允许一个gameobject有多个compment
+          return;
+        }
+        
+        updateTaskMap[obj.id][compment.name]=compment["update"];
+
         awakeTask.push(compment["awake"].bind(compment));
         startTask.push(compment["start"].bind(compment));
         updateTask.push(compment["update"].bind(compment));
         //console.log(compment["update"]);
-        if (!updateTaskMap[obj.id]) {
-          updateTaskMap[obj.id]={};
-        }
-        updateTaskMap[obj.id][compment.name]=compment["update"];
     };
 
     var checkName=function(obj){
