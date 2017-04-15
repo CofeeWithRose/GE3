@@ -179,6 +179,7 @@ window.addEventListener("keydown",function(e){
   Input.down[e.key]=true;
 });
 window.addEventListener("keyup",function(e){
+ // console.log(e);
   Input[e.key]=false;
   Input.up[e.key]=true;
 });
@@ -244,20 +245,26 @@ var HitManager=function HitManager(){
    var hiterMap={};
 
    var onHitTaskMap={};
+   var onLeaveTaskMap={};
 
    var borderList=[];
    var hiterList=[];
 
     woeker.onmessage=function onHitPPross(e){
       
-        var resu=e.data;
+        var resu=e.data.hit;
+        var resuLeave=e.data.leave;
         for (var i = resu.length - 1; i >= 0; i--) {
            onHit(resu[i].hiter,resu[i].border);
         }
+
+         for (var i = resuLeave.length - 1; i >= 0; i--) {
+           onLeave(resuLeave[i].hiter,resuLeave[i].border);
+        }
+
+        onLeave
          
     }
-
-
 
    var _registBorder=function _registBorder(border,isHiter){
 
@@ -273,16 +280,22 @@ var HitManager=function HitManager(){
         var compNames=Object.keys(compmentMap);
 
         var onHitTaskList=[];
+        var onLeaveTaskList=[];
         for (var i = compNames.length - 1; i >= 0; i--) {
              var hitFn=compmentMap[compNames[i]][isHiter? "onHit":"onHitted"];
-
+             var leaveFn=compmentMap[compNames[i]].onLeave;
            if(hitFn){
 
               onHitTaskList.push(hitFn.bind(compmentMap[compNames[i]]));
            }
+
+           if (leaveFn) {
+              onLeaveTaskList.push(leaveFn.bind(compmentMap[compNames[i]]));
+           }
         }
 
         onHitTaskMap[gameObject.id]=onHitTaskList;
+        onLeaveTaskMap[gameObject.id]=onLeaveTaskList;
    };
 
    var _cancellBorder=function _cancellBordrt(id){
@@ -316,6 +329,19 @@ var HitManager=function HitManager(){
       var borderTrans=GE.findGameObjectById(border.id).getCompment("Transform");
       var resultHitFns=onHitTaskMap[hiterBorder.id];
       var resultHitedFns=onHitTaskMap[border.id];
+      for (var i = resultHitFns.length - 1; i >= 0; i--) {
+        resultHitFns[i](border);
+      }
+      for (var i = resultHitedFns.length - 1; i >= 0; i--) {
+        resultHitedFns[i](hiterBorder);
+      }
+   };
+
+    var onLeave=function(hiterBorder,border){
+      var hitTrans=GE.findGameObjectById(hiterBorder.id).getCompment("Transform");
+      var borderTrans=GE.findGameObjectById(border.id).getCompment("Transform");
+      var resultHitFns=onLeaveTaskMap[hiterBorder.id];
+      var resultHitedFns=onLeaveTaskMap[border.id];
       for (var i = resultHitFns.length - 1; i >= 0; i--) {
         resultHitFns[i](border);
       }
@@ -388,29 +414,26 @@ var GE=function () {
 
     var prosessGame=function(){
          HitManager.update();
-         doOnceTask(awakeTask);
-         doOnceTask(startTask);
+         doTask(awakeTask);
+         doTask(startTask);
          startTask=[];
          awakeTask=[];
+         Screen.clear();
+         doTask(updateTask);
          Time.update();
          Screen.showFps();
         requestAnimationFrame(prosessGame);
         //setTimeout(prosessGame, 40);
-         Screen.clear();
+         
 
-         doUpdate();
+         
          Input.update();
 
     };
 
-    var doOnceTask=function(taskList){
-        for (var i = taskList.length - 1; i >= 0; i--) {
+    var doTask=function(taskList){
+        for (var i =0,L=taskList.length; L>= 0&&i<L; i++) {
         	taskList[i]();
-        }
-    };
-    var doUpdate=function doUpdate(){
-        for (var i =0,L= updateTask.length ; L > 0&&i<L; i++) {
-           updateTask[i]();
         }
     };
     

@@ -1,7 +1,9 @@
+var lastHitMap={};
 onmessage=function hitTest(e) {
 
-	var result=[];
-	
+	var result={};
+	result.hit=[];
+	result.leave=[];
 	var hiters=e.data.hiter;
 	var borders=e.data.border;
 	for (var i = hiters.length - 1; i >= 0; i--) {
@@ -27,15 +29,29 @@ onmessage=function hitTest(e) {
 			var borderB=border.y+border.h;
 			var borderT=border.y;
               
-            var conditA=hitL<borderR&&hitR>borderL;
-            var conditB=hitB>borderT&&hitT<borderB;
+            var conditX=hitL<borderR&&hitR>borderL;
+            var conditY=hitB>borderT&&hitT<borderB;
+            
+            var hitParentId=hit.id+"-"+border.id
+			if (conditX&&conditY) {
 
-			if (conditB&&conditA) {
+				if (!lastHitMap[hitParentId]) {
+					hit.hitId=border.id;
+					border.hitId=hit.id;
+
+                	var resuObj={hiter:hit,border:border};
+               		result.hit.push(resuObj);
+               		lastHitMap[hit.id+"-"+border.id]=1;
+				}
+
+			}else if(lastHitMap[hitParentId]){
+
 				hit.hitId=border.id;
 				border.hitId=hit.id;
-
-                var resuObj={hiter:hit,border:border};
-                result.push(resuObj);
+            	var resuObj={hiter:hit,border:border};
+            	result.leave.push(resuObj);
+           		lastHitMap[hitParentId]=0;
+               
 			}
 		}
 	}

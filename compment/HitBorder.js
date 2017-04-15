@@ -5,10 +5,12 @@ function HitBorder() {
 	
 	var trans;
 	var render;
+  var rTrans;
 	this.layer=-1;
   this.border={};
   this.isShow=false;
   this.isHiter=false;
+
 
   this.awake=function(){
 
@@ -34,15 +36,28 @@ function HitBorder() {
 
     HitManager.registBorder(this.border,this.isHiter);
 
-
     if (this.isShow) {
-       var render=trans.gameObject.getCompment("Render")||trans.gameObject.addCompment(new Render());
-       render.setImage({src:"image/border/border.png"});
-       render.setSize(this.border.size); 
-      // console.log("border : "+trans.gameObject.name);
+
+      var  rObj=new GameObject();
+       rObj.name="border_"+trans.gameObject.name;
+       rTrans=rObj.getCompment('Transform');
+      var rRender=rObj.addCompment(new Render());
+       rRender.setImage({src:"image/border/border.png"});
+       rRender.setSize(this.border.size); 
+   //   console.log(rTrans.gameObject);
     }
 
-};
+  };
+
+  this.update=function update(){
+
+    if (this.isShow) {
+         rTrans.position.x=this.border.position.x+trans.position.x;
+         rTrans.position.y=this.border.position.y+trans.position.y;
+    }
+
+  };
+
 
 	this.setBorder=function(x,y,w,h){
      if (x instanceof Object) {

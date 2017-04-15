@@ -1,9 +1,9 @@
 (function(){
-    GE.start(["Render","Animation","PlayerController","HitBorder","Rigidbody"],function(){
+    GE.start(["Render","Animation","PlayerController","HitBorder","Stage"],function(){
 
     var stage=new GameObject();
-    stage.name="stage";
-    stage.addCompment(new Rigidbody());
+    stage.name="Stage";
+    stage.addCompment(new Stage());
 
      var map=new GameObject();
      map.name="map";
@@ -19,7 +19,7 @@
      border.isShow=false;
      border.setBorder(0,0,700,5);
      stage.setChild(mapB1);
-     var trans=mapB1.getCompment('Transform').position={x:35,y:mapTrans.y+110};
+     var trans=mapB1.getCompment('Transform').position={x:35,y:mapTrans.y+105};
 
      var mapB2=new GameObject();
      mapB2.name="ground2";
@@ -27,11 +27,11 @@
      border.isShow=true;
      border.setBorder(0,0,160,5);
      stage.setChild(mapB2);
-     var trans=mapB2.getCompment('Transform').position={x:865,y:mapTrans.y+110};
+     var trans=mapB2.getCompment('Transform').position={x:865,y:mapTrans.y+105};
 
 
    
-   var player=new GameObject();
+/*   var player=new GameObject();
    player.name="player";
    var r=player.addCompment(new Render());
    r.setSize({w:50,h:50});
@@ -40,12 +40,14 @@
     anima1.setAnimation("stand",1,"image/player1");
     anima1.setSpeed(6);
   //player.addCompment(new PlayerController());
-   anima1.play("stand");
-   player.addCompment(new Rigidbody());
+    anima1.play("stand");
+    player.addCompment(new Stage());
+     
     player.getCompment("Transform").position={x:400,y:100};
     player.addCompment(new HitBorder());
+    stage.setChild(player);
   var x=0;
-  var y=10;
+  var y=10;*/
 
 
      
@@ -75,8 +77,10 @@
 
     var player2=new GameObject();
     player2.name="player2";
+
     var r=player2.addCompment(new Render());
-    r.setSize({w:50,h:50});
+    r.setSize({w:70,h:70});
+
     var anima2=player2.addCompment(new Animation());
     anima2.setAnimation("run",7,"image/player2");
     anima2.setAnimation("stand",1,"image/player2");
@@ -86,10 +90,17 @@
     anima2.setAnimation("down",1,"image/player2");
     anima2.setSpeed(5);
     player2.addCompment(new PlayerController());
+
     var border=player2.addCompment(new HitBorder());
-     border.isHiter=true;
+      border.isHiter=true;
+
+     // border.isShow=true;
+      border.setBorder(17,r.size.h-50,25,50);
+
+      player2.getCompment("Transform").position={x:100,y:100};
+
      stage.setChild(player2);
-     stage.setChild(player);
+
 });
 })();
 
