@@ -1,46 +1,61 @@
-/**
-*
-**/
+GE.import(["Render"]);
+
 function HitBorder() {
 	this.name="HitBorder";
-	var _pro=this;
+	
 	var trans;
 	var render;
 	this.layer=-1;
-    this.border={};
-    
-    this.isHiter=false;
+  this.border={};
+  this.isShow=false;
+  this.isHiter=false;
 
-	this.start=function(){
+  this.awake=function(){
 
-       trans=_pro.transform;
-       render=trans.getCompment("Render");
+    trans=this.transform;
+    render=trans.getCompment("Render");
 
-       if (!_pro.border.position) {
-	   		_pro.border.position={x:0,y:0};
-   		}
-   		if (!_pro.border.size) {
-   			_pro.border.size=render.size;
-   		}
-   		_pro.border.transPosition=trans.position;
-   		_pro.border.id=trans.gameObject.id;
-   		
-        HitManager.registBorder(_pro.border,_pro.isHiter);
+    if (!this.border.position) {
+       this.border.position={x:0,y:0};
+    }
+    if (!this.border.size) {
 
-	};
+      if(render){
+
+        this.border.size=render.size;
+      }else{
+        this.border.size={x:0,y:0};
+      }
+
+    }
+
+    this.border.transPosition=trans.position;
+    this.border.id=trans.gameObject.id;
+
+    HitManager.registBorder(this.border,this.isHiter);
+
+
+    if (this.isShow) {
+       var render=trans.gameObject.getCompment("Render")||trans.gameObject.addCompment(new Render());
+       render.setImage({src:"image/border/border.png"});
+       render.setSize(this.border.size); 
+      // console.log("border : "+trans.gameObject.name);
+    }
+
+};
 
 	this.setBorder=function(x,y,w,h){
-       if (x instanceof Object) {
-       	  _pro.border=x;
-       }else{
-       	 _pro.border.position={x:x,y:y};
-	     _pro.border.size={w:w,h:h};
-       }
+     if (x instanceof Object) {
+     	  this.border=x;
+     }else{
+     	  this.border.position={x:x,y:y};
+        this.border.size={w:w,h:h};
+     }
 	};
 	this.setIsHiter=function(bool){
-		_pro.isHiter=bool;
+		this.isHiter=bool;
 	};
 	this.setLayer=function(layer){
-        _pro.layer=layer;
+      this.layer=layer;
 	};
 }

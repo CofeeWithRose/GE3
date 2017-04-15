@@ -3,7 +3,7 @@ onmessage=function hitTest(e) {
 	var result=[];
 	
 	var hiters=e.data.hiter;
-	var borders=e.data.boder;
+	var borders=e.data.border;
 	for (var i = hiters.length - 1; i >= 0; i--) {
 		var hit=hiters[i];
 		hit.x=hit.position.x+hit.transPosition.x;
@@ -17,8 +17,8 @@ onmessage=function hitTest(e) {
 			border.w=border.size.w;
 			border.h=border.size.h;
 
-			var hiterL=hit.x;
-			var hiterR=hit.x+hit.w;
+			var hitL=hit.x;
+			var hitR=hit.x+hit.w;
 			var hitB=hit.y+hit.h;
 			var hitT=hit.y;
 
@@ -28,10 +28,10 @@ onmessage=function hitTest(e) {
 			var borderT=border.y;
               
             var conditA=hitL<borderR&&hitR>borderL;
-            var conditB=hitB<borderT&&hitT>borderB;
+            var conditB=hitB>borderT&&hitT<borderB;
 
 			if (conditB&&conditA) {
-				hit.hitId=border.border.id;
+				hit.hitId=border.id;
 				border.hitId=hit.id;
 
                 var resuObj={hiter:hit,border:border};

@@ -1,9 +1,8 @@
 function Rigidbody() {
 	this.name="Rigidbody";
-	var _pro=this;
 	var trans;
 	this.start=function(){
-       trans=_pro.transform;
+       trans=this.transform;
 	};
 	this.update=function(){
 		if (Input.getKeyUp("m")&&trans.gameObject.name==="stage") {

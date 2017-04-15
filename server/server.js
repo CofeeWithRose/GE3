@@ -1,9 +1,10 @@
 var http = require("http");
 var fs = require('fs');
+var uri=process.cwd();
 exports.start = function(){
     http.createServer(function(request, response) {
 
-    	var url=".."+request.url;
+    	var url=uri+request.url;
         fs.readFile(url, '',function (err, data) {
 
             if (err){

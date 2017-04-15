@@ -226,6 +226,8 @@ var Screen=function(){
      
    }
    return{
+    height:canvas.height,
+    width:canvas.width,
    	position:_position,
    	draw:_draw,
     clear:_clear,
@@ -236,6 +238,7 @@ Screen=Screen();
 
 var HitManager=function HitManager(){
    var woeker=new Worker("Worker/hitTest.js");
+
    var borderMap={};
    var hiterMap={};
 
@@ -243,6 +246,15 @@ var HitManager=function HitManager(){
 
    var borderList=[];
    var hiterList=[];
+
+    woeker.onmessage=function onHitPPross(e){
+      
+        var resu=e.data;
+        for (var i = resu.length - 1; i >= 0; i--) {
+           onHit(resu[i].hiter,resu[i].border);
+        }
+         
+    }
 
 
 
@@ -265,7 +277,7 @@ var HitManager=function HitManager(){
 
            if(hitFn){
 
-              onHitTaskList.push(hitFn);
+              onHitTaskList.push(hitFn.bind(compmentMap[compNames[i]]));
            }
         }
 
@@ -288,19 +300,12 @@ var HitManager=function HitManager(){
    };
 
    var _update=function hitUpdate(){
-    console.log("send req..");
+    //console.log("send req..");
       var req={};
       req.border=borderList;
       req.hiter=hiterList;
       woeker.postMessage(req);
-      woeker.onMessage=function onHitPPross(e){
-        console.log("hit test");
-        var resu=e.data;
-        for (var i = resu.length - 1; i >= 0; i--) {
-           onHit(resu[i].hiter,resu.border);
-        }
-         
-      }
+
    };
 
    //after hited ,hiterBoder add attribuilt named position which record the position of the object hitting.
@@ -308,13 +313,13 @@ var HitManager=function HitManager(){
    var onHit=function(hiterBorder,border){
       var hitTrans=GE.findGameObjectById(hiterBorder.id).getCompment("Transform");
       var borderTrans=GE.findGameObjectById(border.id).getCompment("Transform");
-      var resultHitFns=hiterMap[hiterBorder.id];
-      var resultHitedFns=borderMap[boder.id];
+      var resultHitFns=onHitTaskMap[hiterBorder.id];
+      var resultHitedFns=onHitTaskMap[border.id];
       for (var i = resultHitFns.length - 1; i >= 0; i--) {
-        resultHitFns[i](border.position,borderTrans);
+        resultHitFns[i](border);
       }
       for (var i = resultHitedFns.length - 1; i >= 0; i--) {
-        resultHitedFns[i](hiterBorder.position,borderTrans);
+        resultHitedFns[i](hiterBorder);
       }
    };
   return{
@@ -381,7 +386,7 @@ var GE=function () {
     };
 
     var prosessGame=function(){
-        HitManager.update();
+         HitManager.update();
          doOnceTask(awakeTask);
          doOnceTask(startTask);
          startTask=[];
@@ -403,7 +408,7 @@ var GE=function () {
         }
     };
     var doUpdate=function doUpdate(){
-        for (var i = updateTask.length - 1; i >= 0; i--) {
+        for (var i =0,L= updateTask.length ; L > 0&&i<L; i++) {
            updateTask[i]();
         }
     };
@@ -423,6 +428,7 @@ var GE=function () {
         return gameObjMap[id];
     };
     var _insGamObj=function(obj){
+      
           if (obj instanceof GameObject) {
           	checkName(obj);
           	gameObjMap[obj.id]=obj;
@@ -464,7 +470,7 @@ var GE=function () {
         var compList=Object.keys(obj.compmentMap);
         var tasks=[];
         for (var i = compList.length - 1; i >= 0; i--) {
-        	tasks.push(obj.compmentMap[compList[i]][type]);
+        	tasks.push(obj.compmentMap[compList[i]][type].bind(obj.compmentMap[compList[i]]));
         }
         compList=null;
         return tasks;

@@ -1,7 +1,7 @@
 function Render() {
 	this.name="Render";
 	var PI=Math.PI;
-	var _pro=this;
+	
 	var trans;
 	var canvas=document.createElement("canvas");
     var context=canvas.getContext("2d");
@@ -13,57 +13,56 @@ function Render() {
 
     this.image;
     this.size={w:100,h:100};
-    this.awake=function(){
-    	 trans=_pro.transform;
-    }
+
 	this.start=function(){
-      
-       canvas.width=_pro.size.w;
-       canvas.height=_pro.size.h;
-       point.x=_pro.size.w/2;
-       point.y=_pro.size.h/2;
+       trans=this.transform;
+       canvas.width=this.size.w;
+       canvas.height=this.size.h;
+       point.x=this.size.w/2;
+       point.y=this.size.h/2;
+       //console.log(trans.gameObject.name);
 	};
 	this.update=function(){
-		if(_pro.image){
+		if(this.image){
 			if ((imageChanged||
 				scale.x!=trans.scale.x||
 				scale.y!=trans.scale.y||
-				trans.rotation!=rotation)&&_pro.image.width)
+				trans.rotation!=rotation)&&this.image.width)
 				{ //if the info changed redraw the image
-				context.clearRect(0,0,_pro.size.w,_pro.size.h);
+				context.clearRect(0,0,this.size.w,this.size.h);
 				context.save();
 				context.translate(point.x,point.y);
 				context.rotate(trans.rotation*PI/180);
 	            context.scale(trans.scale.x,trans.scale.y);
-				context.drawImage(_pro.image,-point.x,-point.y,_pro.size.w,_pro.size.h);
+				context.drawImage(this.image,-point.x,-point.y,this.size.w,this.size.h);
 				context.restore();
 				rotation=trans.rotation;
 				scale.x=trans.scale.x;
 				scale.y=trans.scale.y;
-				imageChanged=false;
+				//imageChanged=false;
 		   }
-		 Screen.draw(canvas,trans.position.x,trans.position.y,_pro.size.w,_pro.size.h);
+		 Screen.draw(canvas,trans.position.x,trans.position.y,this.size.w,this.size.h);
 		}
 	};
 	this.setImage=function(img){
 
-	    if (_pro.image&&img.src!=_pro.image.src) {
+	    if (this.image&&img.src!=this.image.src) {
             imageChanged=true;
 		}
 		if (img instanceof Image) {
-			_pro.image=img;
+			this.image=img;
 		}else if (img&&img.src) {
-           _pro.image=ResourceFactory.getResource("Image",img.src);
+           this.image=ResourceFactory.getResource("Image",img.src);
 		}
 	};
 	this.setSize=function(w,h){
 		if (w instanceof Object) {
-			_pro.size=w;
+			this.size=w;
 		}else{
-			_pro.size.w=w;
-	        _pro.size.h=h;
-	        point.x=_pro.size.w/2;
-	        point.y=_pro.size.h/2;
+			this.size.w=w;
+	        this.size.h=h;
+	        point.x=this.size.w/2;
+	        point.y=this.size.h/2;
 		}
      
 	};

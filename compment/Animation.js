@@ -16,7 +16,7 @@ function Animation(){
 	this.update=function(){
 
 		if (anim&&anim.length>0) {
-			if (Time.frameCount%_pro.speed==0) {
+			if (Time.frameCount%this.speed==0) {
 			   count++;
 		    }
 	     	render.setImage(anim[count%imgNum]);

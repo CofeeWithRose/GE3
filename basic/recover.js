@@ -38,15 +38,16 @@ function _buildCompment(obj,compMap){
 function _buildGmaeObject(data){
    var obj=new GameObject();
    obj.name=data.name;
+   obj.id=data.id;
    _buildCompment(obj,data.compmentMap);
    var children=Object.keys(data.children||{});
-   for (var i = children.length - 1; i >= 0; i--) {
+   for (var i =0,L= children.length; i <L&&L>0; i++) {
     obj.setChild(_buildGmaeObject(data.children[children[i]]));
    }
    return obj;
 };
 GE.start(_getDepenList(data),function(){
-     GE.instantGameObject(_buildGmaeObject(data));
+     _buildGmaeObject(data);
 });
 
 };
