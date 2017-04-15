@@ -1,5 +1,6 @@
 var http = require("http");
 var fs = require('fs');
+var c = require('child_process');
 var uri=process.cwd();
 exports.start = function(){
     http.createServer(function(request, response) {
@@ -35,5 +36,6 @@ exports.start = function(){
 
     }).listen(8888);
     console.log("server start...");
+    c.exec('start http://localhost:8888/main.html');
 }
 exports.start ();
