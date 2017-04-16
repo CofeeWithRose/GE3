@@ -13,5 +13,12 @@ function Stage() {
 		if (Input.r||Input.R) {
 			location.reload();
 		}
+		if (Input.e||Input.E) {
+			if (/main/.test(location.href)) {
+				location.href="recover.html";
+			}else{
+				location.href="main.html";
+			}
+		}
 	}
 }

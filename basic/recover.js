@@ -27,7 +27,7 @@ function _buildCompment(obj,compMap){
         var compAttrs=Object.keys(compMap[compNames[i]]);
       for (var j =compAttrs.length - 1; j >= 0; j--) {
         var setMethodName="set"+compAttrs[j][0].toUpperCase()+compAttrs[j].substr(1);
-       console.log(setMethodName+": "+newComp[setMethodName]);
+      // console.log(setMethodName+": "+newComp[setMethodName]);
         newComp[setMethodName](compMap[compNames[i]][compAttrs[j]]);
 /*       console.log(setMethodName+": ");
          console.log(compMap[compNames[i]][compAttrs[j]]);*/

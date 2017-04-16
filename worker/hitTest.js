@@ -12,8 +12,8 @@ onmessage=function hitTest(e) {
 		hit.y=hit.position.y+hit.transPosition.y;
 		hit.w=hit.size.w;
 		hit.h=hit.size.h;
-		for (var i = borders.length - 1; i >= 0; i--) {
-			var border=borders[i];
+		for (var j = borders.length - 1; j >= 0; j--) {
+			var border=borders[j];
 			border.x=border.position.x+border.transPosition.x;
 			border.y=border.position.y+border.transPosition.y;
 			border.w=border.size.w;
@@ -32,20 +32,21 @@ onmessage=function hitTest(e) {
             var conditX=hitL<borderR&&hitR>borderL;
             var conditY=hitB>borderT&&hitT<borderB;
             
-            var hitParentId=hit.id+"-"+border.id
-			if (conditX&&conditY) {
+            var hitParentId=hit.id+"-"+border.id;
 
+			if (conditX&&conditY) {
+                
 				if (!lastHitMap[hitParentId]) {
 					hit.hitId=border.id;
 					border.hitId=hit.id;
-
                 	var resuObj={hiter:hit,border:border};
                		result.hit.push(resuObj);
-               		lastHitMap[hit.id+"-"+border.id]=1;
+               		lastHitMap[hitParentId]=1;
 				}
 
 			}else if(lastHitMap[hitParentId]){
 
+				hit.hitId=border.id;
 				hit.hitId=border.id;
 				border.hitId=hit.id;
             	var resuObj={hiter:hit,border:border};

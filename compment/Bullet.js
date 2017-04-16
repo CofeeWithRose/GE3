@@ -1,0 +1,74 @@
+function Bullet() {
+	this.name="Bullet";
+	var trans;
+	var anim;
+    var v={x:this.V,y:0};
+    var count=0;
+    var isHit;
+
+    this.V=5;
+    this.degree=0;
+    this.initPostion={x:0,y:0};
+
+	this.start=function(){
+
+		trans=this.transform;
+		//console.log("bullet : "+trans.gameObject.id);
+		anim=trans.getCompment("Animation");
+		this.degree=this.degree*Math.PI/180;
+        v.x=Util.parseInt(Math.cos(this.degree)*this.V);
+        v.y=Util.parseInt(Math.sin(this.degree)*this.V);
+        trans.position.x=this.initPostion.x+v.x;
+        trans.position.y=this.initPostion.y+v.y;
+        //console.log(trans);
+	};
+	this.update=function(){
+		
+		anim.play("fly");
+        trans.position.x+=v.x;
+        trans.position.y+=v.y;
+
+        if (isHit) {
+        	destroy();
+        }
+
+        if (!Screen.judgeInScreen(trans.gameObject)) {
+        	isHit=true;
+        }
+	};
+
+	this.setV=function(val){
+		this.V=val;
+	};
+	this.setDegree=function(val){
+		this.degree=val;
+	};
+	this.setInitPosition=function(pos){
+		this.initPostion.x=pos.x;
+		this.initPostion.y=pos.y;
+	}
+
+	this.onHit=function(other){
+       
+    /*   var otherObj=GE.findGameObjectById(other.id);
+      
+       if (/ground/.test(otherObj.name)) {
+       		isHit=true;
+       }*/
+
+	};
+	var destroy=function(){
+		v.x=0;
+		v.y=0;
+		anim.play("destroy");
+		if (Time.frameCount%4==0) {
+			count++;
+
+		}
+		if (count>=2) {
+			trans.gameObject.destroySelf();
+		}
+	};
+
+
+}

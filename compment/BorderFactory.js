@@ -1,4 +1,4 @@
-function BorderFactory(infoList,bottom,isShow,stage) {
+function BorderFactory(infoList,bottom,isShow,parent) {
 	this.name="BorderFactory";
 	var num=1;
 	//{x0:23,y0:45,x1:34,y1:455,type:}
@@ -12,7 +12,7 @@ function BorderFactory(infoList,bottom,isShow,stage) {
 	     var border=mapB1.addCompment(new HitBorder());
 	     border.isShow=isShow;
 	     border.setBorder(0,0,w,h);
-	     stage.setChild(mapB1);
+	     parent.setChild(mapB1);
 	     var trans=mapB1.getCompment('Transform').position={x:info.x0,y:bottom+info.y0};
 	}
 }

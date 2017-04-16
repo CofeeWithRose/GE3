@@ -31,7 +31,9 @@ GameObject.prototype.addCompment = function(compment) {
 		this.compmentMap[compment.name]=compment;
 		compment.transform=this.compmentMap.Transform;
   }
-  GE.addTask(this,compment);
+  var THIS=this;
+  requestAnimationFrame(function(){GE.addTask(THIS,compment);});
+
   return compment;
 };
 GameObject.prototype.getCompment=function(name){
@@ -56,6 +58,9 @@ GameObject.prototype.setChild=function(obj){
      this.children[obj.id]=obj;
   }
   
+};
+GameObject.prototype.destroySelf = function() {
+    GE.destroyGameObject(this);
 };
 
 
@@ -100,10 +105,11 @@ Transform.prototype.getCompment=function(name){
 
 var Util=function(){
     function _guid() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var re='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
         return v.toString(16);
       });
+      return re;
     };
     function _stringify(obj){
        var record=[];
@@ -145,7 +151,7 @@ var Time={
     lastTime:0,
     gamTime:0,
     update:function(){
-        var now=new Date().getTime();
+        var now=performance.now();
          Time.frameCount++;
          Time.delTime=now-Time.lastTime;
          Time.lastTime=now;
@@ -156,32 +162,40 @@ var Time={
 var Input=function(){
    var _getKeyUp=function(key){
      return Input.up[key];
-  };
-return{
-  getKeyUp:_getKeyUp
-}
+    };
+    var _getKeyDown=function(key){
+      return Input.down[key];
+    };
+  return{
+    getKeyUp:_getKeyUp,
+    getKeyDown:_getKeyDown
+  }
 };
 Input=Input();
 Input.down={};
 Input.up={};
+
 Input.update=function(){
   var d=Object.keys(Input.down);
-  var u=Object.keys(Input.up);
+ var u=Object.keys(Input.up);
   for (var i = d.length - 1; i >= 0; i--) {
     Input.down[d[i]]=false;
   }
   for (var i = u.length - 1; i >= 0; i--) {
-    Input.up[u[i]]=false;
+      Input.up[u[i]]=false;
   }
+
 }
 window.addEventListener("keydown",function(e){
+  
+  if (!Input[e.key]) {
+      Input.down[e.key]=true;
+  };
   Input[e.key]=true;
-  Input.down[e.key]=true;
 });
 window.addEventListener("keyup",function(e){
- // console.log(e);
   Input[e.key]=false;
-  Input.up[e.key]=true;
+ Input.up[e.key]=true;
 });
 
 var ResourceFactory=function(){
@@ -215,7 +229,7 @@ var Screen=function(){
    var context=canvas.getContext("2d");
    var fps=document.getElementById("FPS");
    var _draw=function(obj,x,y,w,h){
-        context.drawImage(obj,x-_position.x,y-_position.y,w,h);
+      context.drawImage(obj,x-_position.x,y-_position.y,w,h);
    }
    var _showFps=function(){
 
@@ -226,14 +240,36 @@ var Screen=function(){
    var _clear=function(){
      context.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
      
-   }
+   };
+   var _judgeInScreen=function judgeInScreen(obj){
+
+      if (obj instanceof GameObject&&obj.getCompment("Render")) {
+          var size=obj.getCompment("Render").size;
+          var oPos=obj.getCompment("Transform").position;
+          var L=_position.x;
+          var R=_position.x+canvas.width;
+          var T=_position.y;
+          var B=_position.y+canvas.height;
+          if (oPos.x+size.w<L||oPos.x>R) {
+            return false;
+          }else if (oPos.y+size.h<T||oPos.y>B) {
+            return false;
+          }else{
+            return true;
+          }
+
+      }else{
+        return false;
+      }
+   };
    return{
     height:canvas.height,
     width:canvas.width,
    	position:_position,
    	draw:_draw,
     clear:_clear,
-    showFps:_showFps
+    showFps:_showFps,
+    judgeInScreen:_judgeInScreen
    }
 };
 Screen=Screen();
@@ -250,21 +286,21 @@ var HitManager=function HitManager(){
    var borderList=[];
    var hiterList=[];
 
+
     woeker.onmessage=function onHitPPross(e){
-      
-        var resu=e.data.hit;
+
+      var resu=e.data.hit;
         var resuLeave=e.data.leave;
+
         for (var i = resu.length - 1; i >= 0; i--) {
-           onHit(resu[i].hiter,resu[i].border);
-        }
+         onHit(resu[i].hiter,resu[i].border,onHitTaskMap);
+       }
 
-         for (var i = resuLeave.length - 1; i >= 0; i--) {
-           onLeave(resuLeave[i].hiter,resuLeave[i].border);
-        }
-
-        onLeave
-         
-    }
+       for (var i = resuLeave.length - 1; i >= 0; i--) {
+         onHit(resuLeave[i].hiter,resuLeave[i].border,onLeaveTaskMap);
+       }  
+ 
+    };
 
    var _registBorder=function _registBorder(border,isHiter){
 
@@ -306,10 +342,11 @@ var HitManager=function HitManager(){
         delete borderMap[id];
       }
       if (hiterMap[id]) {
-          hiterList.splice(hiterList.indexOf(hiterMap[id]),1);
+        hiterList.splice(hiterList.indexOf(hiterMap[id]),1);
         delete  onHitTaskMap[id];
         delete hiterMap[id];
       }
+       delete onLeaveTaskMap[id];
         
    };
 
@@ -324,11 +361,9 @@ var HitManager=function HitManager(){
 
    //after hited ,hiterBoder add attribuilt named position which record the position of the object hitting.
    //at same time ,border also add attribuilt named position which record the position that objet hited it.
-   var onHit=function(hiterBorder,border){
-      var hitTrans=GE.findGameObjectById(hiterBorder.id).getCompment("Transform");
-      var borderTrans=GE.findGameObjectById(border.id).getCompment("Transform");
-      var resultHitFns=onHitTaskMap[hiterBorder.id];
-      var resultHitedFns=onHitTaskMap[border.id];
+   var onHit=function(hiterBorder,border,map){
+      var resultHitFns=map[hiterBorder.id];
+      var resultHitedFns=map[border.id];
       for (var i = resultHitFns.length - 1; i >= 0; i--) {
         resultHitFns[i](border);
       }
@@ -337,18 +372,6 @@ var HitManager=function HitManager(){
       }
    };
 
-    var onLeave=function(hiterBorder,border){
-      var hitTrans=GE.findGameObjectById(hiterBorder.id).getCompment("Transform");
-      var borderTrans=GE.findGameObjectById(border.id).getCompment("Transform");
-      var resultHitFns=onLeaveTaskMap[hiterBorder.id];
-      var resultHitedFns=onLeaveTaskMap[border.id];
-      for (var i = resultHitFns.length - 1; i >= 0; i--) {
-        resultHitFns[i](border);
-      }
-      for (var i = resultHitedFns.length - 1; i >= 0; i--) {
-        resultHitedFns[i](hiterBorder);
-      }
-   };
   return{
     registBorder:_registBorder,
     cancellBorder:_cancellBorder,
@@ -424,15 +447,12 @@ var GE=function () {
          Screen.showFps();
         requestAnimationFrame(prosessGame);
         //setTimeout(prosessGame, 40);
-         
-
-         
          Input.update();
 
     };
 
     var doTask=function(taskList){
-        for (var i =0,L=taskList.length; L>= 0&&i<L; i++) {
+        for (var i =0;i<taskList.length; i++) {
         	taskList[i]();
         }
     };
@@ -450,13 +470,32 @@ var GE=function () {
         if (!updateTaskMap[obj.id]) {
           updateTaskMap[obj.id]={};
         }
-        
-        updateTaskMap[obj.id][compment.name]=compment["update"];
-
         awakeTask.push(compment["awake"].bind(compment));
         startTask.push(compment["start"].bind(compment));
-        updateTask.push(compment["update"].bind(compment));
+        var upTask=compment["update"].bind(compment);
+        updateTaskMap[obj.id][compment.name]=upTask;
+        updateTask.push(upTask);
         //console.log(compment["update"]);
+    };
+
+    var _destroyGameObject=function(obj){
+        if (gameObjMap[obj.id]) {
+           delete gameObjMap[obj.id];
+
+           var compNames=Object.keys(updateTaskMap[obj.id]);
+           for (var i = compNames.length - 1; i >= 0; i--) {
+
+             var updateFn=updateTaskMap[obj.id][compNames[i]];
+             var index=updateTask.indexOf(updateFn);
+              if (index!==-1) {
+
+                 updateTask.splice(index,1);
+              }
+            
+           }
+
+           HitManager.cancellBorder(obj.id);
+        }
     };
 
     var checkName=function(obj){
@@ -484,7 +523,8 @@ var GE=function () {
 		import:_import,
 		start:_startGame,
 		addTask:_addTask,//obj,compment
-    findGameObjectById:_findGameObjectById
+    findGameObjectById:_findGameObjectById,
+    destroyGameObject:_destroyGameObject
 	};
 };
 GE=GE();
