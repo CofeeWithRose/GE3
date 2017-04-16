@@ -14,7 +14,7 @@ function Fire() {
        isHiter=border&&border.isHiter;
 	};
 	this.update=function(){
-		if (Time.frameCount%1==0) {
+		if (Time.frameCount%5==0) {
 			if (Input.j||Input.J) {
 				createBullet(this.degree);
 			}
@@ -27,7 +27,7 @@ function Fire() {
 	var createBullet=function(degree){
 		num++;
 		var b=new GameObject();
-		b.name="bullet_"+trans.name+num;
+		b.name="bullet_"+trans.gameObject.name+num;
 		var render=b.addCompment(new Render());
 		render.setSize(10,10);
 		var anim=b.addCompment(new Animation());

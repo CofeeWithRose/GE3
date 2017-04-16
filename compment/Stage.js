@@ -3,9 +3,10 @@ function Stage() {
 	var trans;
 	this.start=function(){
        trans=this.transform;
+
 	};
 	this.update=function(){
-		if (Input.getKeyUp("m")) {
+		if (Input.getKeyUp("i")) {
 			localStorage._GE = Util.stringify(trans.gameObject);
 			//document.write(localStorage._GE);
 			alert("save successfuly!");

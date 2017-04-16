@@ -13,13 +13,14 @@ function Bullet() {
 	this.start=function(){
 
 		trans=this.transform;
-		//console.log("bullet : "+trans.gameObject.id);
+		
 		anim=trans.getCompment("Animation");
-		this.degree=this.degree*Math.PI/180;
-        v.x=Util.parseInt(Math.cos(this.degree)*this.V);
-        v.y=Util.parseInt(Math.sin(this.degree)*this.V);
+		var d=this.degree*Math.PI/180;
+        v.x=Util.parseInt(Math.cos(d)*this.V);
+        v.y=Util.parseInt(Math.sin(d)*this.V);
         trans.position.x=this.initPosition.x+v.x;
         trans.position.y=this.initPosition.y+v.y;
+
         //console.log(trans);
 	};
 	this.update=function(){
