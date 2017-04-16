@@ -215,7 +215,7 @@ var Screen=function(){
    var context=canvas.getContext("2d");
    var fps=document.getElementById("FPS");
    var _draw=function(obj,x,y,w,h){
-        context.drawImage(obj,x,y,w,h);
+        context.drawImage(obj,x-_position.x,y-_position.y,w,h);
    }
    var _showFps=function(){
 
@@ -259,7 +259,7 @@ var HitManager=function HitManager(){
         }
 
          for (var i = resuLeave.length - 1; i >= 0; i--) {
-           onLeaveTaskMap(resuLeave[i].hiter,resuLeave[i].border);
+           onLeave(resuLeave[i].hiter,resuLeave[i].border);
         }
 
         onLeave
@@ -449,9 +449,6 @@ var GE=function () {
 
         if (!updateTaskMap[obj.id]) {
           updateTaskMap[obj.id]={};
-        }else if (updateTaskMap[obj.id][compment.name]) {
-          //不允许一个gameobject有多个compment
-          return;
         }
         
         updateTaskMap[obj.id][compment.name]=compment["update"];

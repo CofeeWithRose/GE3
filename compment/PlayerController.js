@@ -6,8 +6,15 @@ function PlayerController(argument) {
 	var anima;
 	var trans;
 	var size;
+	var isOnGround;
 
-	var isOnGround=false;
+    var L=Screen.width/4;
+    var R=Screen.width*3/4;
+
+    var lastHite;
+
+    var targetPosition=0;
+
 	this.start=function(){
 		trans=this.transform;
 		trans.scale.x=-1;
@@ -18,7 +25,6 @@ function PlayerController(argument) {
 	this.update=function(){
 	
 		if (Input.a||Input.A) {
-
 			//trans.position.x-=this.v.x;
 			this.v.x=-this.V;
 			trans.scale.x=1;
@@ -48,13 +54,18 @@ function PlayerController(argument) {
       	  this.a.y=0.5;
       	  rotate.apply(this);
 	    }
+//console.log(isOnGround);
 	    this.v.x+=this.a.x;
 	    this.v.y+=this.a.y;
         trans.position.y+=this.v.y;
         trans.position.x+=this.v.x;
+
+        moveScreen.call(this);
 	};
 
 	this.onHit=function onHit(other){
+		console.log("hit : "+other.id);
+		 lastHite=other.id;
 		 this.a.y=0;
 		 this.v.y=0;
 		 trans.rotation=0;
@@ -63,12 +74,36 @@ function PlayerController(argument) {
 	};
 
 	this.onLeave=function onLeave(other){
-		isOnGround=false;
-	}
+		//console.log("leave : "+other.id);
+		if(lastHite==other.id){
+			isOnGround=false;
+		}
+
+	};
 
 	var rotate=function rotate(){
         anima.play("jump");
         trans.rotation-=15*trans.scale.x;
+	};
+
+	var moveScreen=function(){
+
+        if ((trans.position.x<Screen.position.x+L)||(trans.position.x+size.w>Screen.position.x+R)) {
+        	targetPosition=trans.position.x-Screen.width/2;
+        }
+
+
+        if (targetPosition<=0) {
+        	targetPosition=0;
+        }
+        var drtX=targetPosition-Screen.position.x;
+      //  console.log(drtX);
+        if (drtX<=3&&drtX>=-3) {
+        	Screen.position.x=targetPosition;
+        }else{
+        	Screen.position.x+=drtX/80;
+        }
+
 	};
 
 	this.setV=function(val){

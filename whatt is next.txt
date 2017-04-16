@@ -1,0 +1,16 @@
+
+7.add the borders in map 
+8.player can get down ,swim,shoot in eight directions,
+
+6.split apart the playerController into grivityMotion and playerController
+2.GE find objectbyname
+1.render show name
+3.GE destory game object=>gameObject destoryself
+
+6.hitTest do not hit with self
+
+9.value of life,number limite of bullets
+
+4.render just rend the object in screen
+5.hitTest just test the object inscreen
+

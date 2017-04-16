@@ -1,5 +1,5 @@
 (function(){
-    GE.start(["Render","Animation","PlayerController","HitBorder","Stage"],function(){
+    GE.start(["Render","Animation","PlayerController","HitBorder","Stage","BorderFactory"],function(){
 
     var stage=new GameObject();
     stage.name="Stage";
@@ -13,29 +13,52 @@
      var mapTrans=map.getCompment('Transform').position={x:0,y:Screen.height-300};
      stage.setChild(map);
 
-     var mapB1=new GameObject();
-     mapB1.name="ground1";
-     var border=mapB1.addCompment(new HitBorder());
-     border.isShow=false;
-     border.setBorder(0,0,700,5);
-     stage.setChild(mapB1);
-     var trans=mapB1.getCompment('Transform').position={x:35,y:mapTrans.y+105};
 
-     var mapB2=new GameObject();
+     
+    /* var mapB2=new GameObject();
      mapB2.name="ground2";
      var border=mapB2.addCompment(new HitBorder());
-     border.isShow=false;
+     border.isShow=true;
      border.setBorder(0,0,160,5);
      stage.setChild(mapB2);
      var trans=mapB2.getCompment('Transform').position={x:865,y:mapTrans.y+105};
 
-    var mapB3=new GameObject();
+     var mapB3=new GameObject();
      mapB3.name="ground3";
      var border=mapB3.addCompment(new HitBorder());
-     border.isShow=false;
+     border.isShow=true;
      border.setBorder(0,0,250,5);
      stage.setChild(mapB3);
-     var trans=mapB3.getCompment('Transform').position={x:1156,y:mapTrans.y+105};
+     var trans=mapB3.getCompment('Transform').position={x:1156,y:mapTrans.y+105};*/
+
+     var bordeList=[];
+     bordeList.push({x0:32,y0:110,x1:738,y1:118});
+     bordeList.push({x0:866,y0:110,x1:1026,y1:118});
+     bordeList.push({x0:1154,y0:110,x1:1410,y1:118});
+     bordeList.push({x0:1348,y0:80,x1:1858,y1:85});
+     bordeList.push({x0:1827,y0:110,x1:2050,y1:118});
+     bordeList.push({x0:2018,y0:80,x1:2178,y1:90});
+     bordeList.push({x0:2146,y0:145,x1:2240,y1:142});
+     bordeList.push({x0:2211,y0:110,x1:2273,y1:118});
+     bordeList.push({x0:2305,y0:145,x1:2368,y1:142});
+     bordeList.push({x0:2337,y0:175,x1:2432,y1:176});
+     bordeList.push({x0:2433,y0:110,x1:2496,y1:118});
+     bordeList.push({x0:2466,y0:80,x1:2528,y1:85});
+     bordeList.push({x0:2561,y0:110,x1:2625,y1:118});
+     bordeList.push({x0:2594,y0:145,x1:2751,y1:150});
+     bordeList.push({x0:2690,y0:208,x1:2782,y1:150});
+     bordeList.push({x0:2817,y0:175,x1:2880,y1:176});
+     bordeList.push({x0:2914,y0:145,x1:2976,y1:150});
+     bordeList.push({x0:2977,y0:110,x1:3134,y1:115});
+     bordeList.push({x0:3135,y0:145,x1:3166,y1:143});
+     bordeList.push({x0:3168,y0:175,x1:3199,y1:176});
+     bordeList.push({x0:2977,y0:210,x1:3248,y1:215});
+     bordeList.push({x0:3248,y0:180,x1:3326,y1:233,type:"end"});
+
+     bordeList.push({x0:160,y0:145,x1:254,y1:142});
+     bordeList.push({x0:257,y0:170,x1:288,y1:175});
+
+     BorderFactory(bordeList,mapTrans.y,false,stage);
 
 
    
@@ -102,8 +125,8 @@
     var border=player2.addCompment(new HitBorder());
       border.isHiter=true;
 
-     // border.isShow=true;
-      border.setBorder(17,r.size.h-50,25,50);
+     border.isShow=false;
+      border.setBorder(20,r.size.h-5,20,5);
 
       player2.getCompment("Transform").position={x:100,y:100};
 
