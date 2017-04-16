@@ -59,11 +59,14 @@ function PlayerController(argument) {
                this.v.y=-10;
 			}
 		}else {
-			//fire.setDegree(0);
       	  this.a.y=0.5;
       	  jump.apply(this);
+      	  if (this.v.y>=10) {
+      	  	this.v.y=10;
+      	  }
 	    }
 //console.log(isOnGround);
+
 	    this.v.x+=this.a.x;
 	    this.v.y+=this.a.y;
         trans.position.y+=this.v.y;

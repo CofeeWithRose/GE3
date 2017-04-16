@@ -28,7 +28,12 @@ function _buildCompment(obj,compMap){
       for (var j =compAttrs.length - 1; j >= 0; j--) {
         var setMethodName="set"+compAttrs[j][0].toUpperCase()+compAttrs[j].substr(1);
       // console.log(setMethodName+": "+newComp[setMethodName]);
-        newComp[setMethodName](compMap[compNames[i]][compAttrs[j]]);
+      if ("function"==(typeof newComp[setMethodName])) {
+         newComp[setMethodName](compMap[compNames[i]][compAttrs[j]]);
+       }else{
+         throw setMethodName +" is not  a function";
+       }
+       
 /*       console.log(setMethodName+": ");
          console.log(compMap[compNames[i]][compAttrs[j]]);*/
       }

@@ -8,7 +8,7 @@ function Bullet() {
 
     this.V=5;
     this.degree=0;
-    this.initPostion={x:0,y:0};
+    this.initPosition={x:0,y:0};
 
 	this.start=function(){
 
@@ -18,8 +18,8 @@ function Bullet() {
 		this.degree=this.degree*Math.PI/180;
         v.x=Util.parseInt(Math.cos(this.degree)*this.V);
         v.y=Util.parseInt(Math.sin(this.degree)*this.V);
-        trans.position.x=this.initPostion.x+v.x;
-        trans.position.y=this.initPostion.y+v.y;
+        trans.position.x=this.initPosition.x+v.x;
+        trans.position.y=this.initPosition.y+v.y;
         //console.log(trans);
 	};
 	this.update=function(){
@@ -44,8 +44,8 @@ function Bullet() {
 		this.degree=val;
 	};
 	this.setInitPosition=function(pos){
-		this.initPostion.x=pos.x;
-		this.initPostion.y=pos.y;
+		this.initPosition.x=pos.x;
+		this.initPosition.y=pos.y;
 	}
 
 	this.onHit=function(other){

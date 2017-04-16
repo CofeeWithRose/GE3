@@ -14,7 +14,7 @@ function Fire() {
        isHiter=border&&border.isHiter;
 	};
 	this.update=function(){
-		if (Time.frameCount%5==0) {
+		if (Time.frameCount%1==0) {
 			if (Input.j||Input.J) {
 				createBullet(this.degree);
 			}
@@ -42,6 +42,7 @@ function Fire() {
 		bullet.degree=degree;
 		//console.log({x:trans.position+size.w/2,y:trans.position.y+size.h/2});
 		bullet.setInitPosition({x:trans.position.x+size.w/2,y:trans.position.y+size.h/2});
+		stage.setChild(b);
 
 	}
 }

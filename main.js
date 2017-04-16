@@ -1,9 +1,7 @@
 (function(){
     GE.start(["Render","Animation","PlayerController","HitBorder","Stage","BorderFactory","Fire"],function(){
 
-    var stage=new GameObject();
-    stage.name="Stage";
-    stage.addCompment(new Stage());
+
 
      var map=new GameObject();
      map.name="map";

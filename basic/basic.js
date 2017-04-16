@@ -424,6 +424,8 @@ var GE=function () {
     	if (Object.keys(impMap).length===completeNum) {
     		Time.startTime=new Date().getTime();
     		completeTask();
+        stage.name="Stage";
+        stage.addCompment(new Stage());
     		prosessGame();
     	}else{
     		setTimeout(function() {listen(completeTask)}, 100);
@@ -528,3 +530,4 @@ var GE=function () {
 	};
 };
 GE=GE();
+var stage=new GameObject();
