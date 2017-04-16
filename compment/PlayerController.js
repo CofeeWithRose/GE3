@@ -64,7 +64,7 @@ function PlayerController(argument) {
 	};
 
 	this.onHit=function onHit(other){
-		console.log("hit : "+other.id);
+		//console.log("hit : "+other.id);
 		 lastHite=other.id;
 		 this.a.y=0;
 		 this.v.y=0;
@@ -92,17 +92,12 @@ function PlayerController(argument) {
         	targetPosition=trans.position.x-Screen.width/2;
         }
 
+        if (Screen.position.x<=0) {
+        	Screen.position.x=0;
+        }
+        Screen.position.x+=Util.parseInt((targetPosition-Screen.position.x)/50);
 
-        if (targetPosition<=0) {
-        	targetPosition=0;
-        }
-        var drtX=targetPosition-Screen.position.x;
-      //  console.log(drtX);
-        if (drtX<=3&&drtX>=-3) {
-        	Screen.position.x=targetPosition;
-        }else{
-        	Screen.position.x+=drtX/80;
-        }
+
 
 	};
 

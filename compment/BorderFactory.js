@@ -1,6 +1,6 @@
 function BorderFactory(infoList,bottom,isShow,stage) {
 	this.name="BorderFactory";
-	var num=10;
+	var num=1;
 	//{x0:23,y0:45,x1:34,y1:455,type:}
 	for (var i = infoList.length - 1; i >= 0; i--) {
 		var info=infoList[i];
