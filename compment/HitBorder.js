@@ -1,4 +1,4 @@
-GE.import(["Render"]);
+GE.import(["Render","HitManagerService"]);
 
 function HitBorder() {
 	this.name="HitBorder";
@@ -47,6 +47,7 @@ function HitBorder() {
        rRender.setSize(this.border.size); 
    //   console.log(rTrans.gameObject);
     }
+     //console.log("border : "+this.isHiter);
 
   };
 

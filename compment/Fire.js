@@ -3,26 +3,27 @@ function Fire() {
 	this.name="Fire";
 	var trans;
 	var num=0;
-	var isHiter;
 	var size;
+	this.isHiter;
     this.degree=0;
 	this.start=function(){
-		
        trans=this.transform;
        var border=trans.getCompment("HitBorder");
        size=trans.getCompment("Render").size;
-       isHiter=border&&border.isHiter;
 	};
 	this.update=function(){
-		if (Time.frameCount%5==0) {
+		if (Time.frameCount%10==0) {
 			if (Input.j||Input.J) {
-				createBullet(this.degree);
+				createBullet.call(this,this.degree);
 			}
 		}
 	}
 	this.setDegree=function(val){
 		this.degree=val;
-	}
+	};
+	this.setIsHiter=function(val){
+		this.isHiter=val;
+	};
 
 	var createBullet=function(degree){
 		num++;
@@ -36,13 +37,13 @@ function Fire() {
 		var border=b.addCompment(new HitBorder());
 		border.setBorder(2,2,6,6);
 		//border.isShow=true;
-		border.isHiter=isHiter;
+		border.isHiter=this.isHiter;
 
 		var bullet=b.addCompment(new Bullet());
 		bullet.degree=degree;
 		//console.log({x:trans.position+size.w/2,y:trans.position.y+size.h/2});
 		bullet.setInitPosition({x:trans.position.x+size.w/2,y:trans.position.y+size.h/2});
-		stage.setChild(b);
+		Stage.setChild(b);
 
 	}
 }

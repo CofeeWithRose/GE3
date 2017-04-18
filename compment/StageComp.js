@@ -1,5 +1,5 @@
-function Stage() {
-	this.name="Stage";
+function StageComp() {
+	this.name="StageComp";
 	var trans;
 	this.start=function(){
        trans=this.transform;
@@ -22,4 +22,4 @@ function Stage() {
 			}
 		}
 	}
-}
+};

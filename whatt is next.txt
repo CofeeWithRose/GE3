@@ -1,5 +1,4 @@
 
-7.add the borders in map 
 8.player can get down ,swim,shoot in eight directions,
 
 6.split apart the playerController into grivityMotion and playerController

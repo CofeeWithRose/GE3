@@ -1,3 +1,4 @@
+GE.import(["ResourceFactoryService"]);
 function Animation(){
 	this.name="Animation";
 	var _pro=this;

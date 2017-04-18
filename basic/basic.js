@@ -18,11 +18,11 @@ GameObject.prototype.getChildByName=function(name){
 	return children[name];
 };
 GameObject.prototype.addCompment = function(compment) {
+
 	if (!(compment instanceof Compment)) {
         throw compment +" is not a compment";
-	}else if (!compment.name){
-		throw compment +" the compment has no name ";
-	}if(compment.name==="Transform"){
+	}
+  if(compment.name==="Transform"){
     var keys=Object.keys(compment);
     for (var i = keys.length - 1; i >= 0; i--) {
       this.compmentMap.Transform[keys[i]]=compment[keys[i]];
@@ -103,287 +103,9 @@ Transform.prototype.getCompment=function(name){
     return this.compmentMap[name];
 };
 
-var Util=function(){
-    function _guid() {
-      var re='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-      });
-      return re;
-    };
-    function _stringify(obj){
-       var record=[];
-
-       function replacer(key,value){
-          if(value instanceof Image){
-              value={src:value.src};
-          }else if(!value._){
-             value._=1;
-             record.push(value);
-          }else{
-            return undefined;
-          }
-           return value;
-        };
-
-        var str=JSON.stringify(obj,replacer).replace(/"_":1/g,"").replace(/,}/g,"}");
-         
-        for (var i = record.length - 1; i >= 0; i--) {
-           delete record[i]._;
-        };
-        return str;
-    };
-    function _parseInt(number) {
-    return number*1 | 0 || 0;
-}
-    return {
-      stringify:_stringify,
-      guid:_guid,
-      parseInt:_parseInt
-    }
-};
-Util=Util();
-
-var Time={
-    frameCount:0,
-    startTime:0,
-    delTime:0,
-    lastTime:0,
-    gamTime:0,
-    update:function(){
-        var now=performance.now();
-         Time.frameCount++;
-         Time.delTime=now-Time.lastTime;
-         Time.lastTime=now;
-         Time.gamTime=now-Time.startTime;
-    }
- 
-};
-var Input=function(){
-   var _getKeyUp=function(key){
-     return Input.up[key];
-    };
-    var _getKeyDown=function(key){
-      return Input.down[key];
-    };
-  return{
-    getKeyUp:_getKeyUp,
-    getKeyDown:_getKeyDown
-  }
-};
-Input=Input();
-Input.down={};
-Input.up={};
-
-Input.update=function(){
-  var d=Object.keys(Input.down);
- var u=Object.keys(Input.up);
-  for (var i = d.length - 1; i >= 0; i--) {
-    Input.down[d[i]]=false;
-  }
-  for (var i = u.length - 1; i >= 0; i--) {
-      Input.up[u[i]]=false;
-  }
-
-}
-window.addEventListener("keydown",function(e){
-  
-  if (!Input[e.key]) {
-      Input.down[e.key]=true;
-  };
-  Input[e.key]=true;
-});
-window.addEventListener("keyup",function(e){
-  Input[e.key]=false;
- Input.up[e.key]=true;
-});
-
-var ResourceFactory=function(){
-    var source={};
-    var _getResource=function(type,src){
-
-        if (source[type]&&source[type][src]) {
-          return source[type][src];
-        }else {
-          if (!source[type]) {
-             source[type]={};
-          }
-          var temp=new window[type]();
-          temp.src=src;
-          source[type][src]=temp;
-         // console.log("load resource");
-          return temp;
-        }
-    }
-    return{
-      getResource:_getResource
-    }
-};
-ResourceFactory=ResourceFactory();
-
-var Screen=function(){
-   var _position={x:0,y:0};
-   var canvas=document.getElementById("canvas");
-   canvas.width=canvas.clientWidth;
-   canvas.height=canvas.clientHeight;
-   var context=canvas.getContext("2d");
-   var fps=document.getElementById("FPS");
-   var _draw=function(obj,x,y,w,h){
-      context.drawImage(obj,x-_position.x,y-_position.y,w,h);
-   }
-   var _showFps=function(){
-
-     if (Time.frameCount%100==1) {
-          fps.innerHTML=Util.parseInt(1000/Time.delTime);
-      }    
-   };
-   var _clear=function(){
-     context.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
-     
-   };
-   var _judgeInScreen=function judgeInScreen(obj){
-
-      if (obj instanceof GameObject&&obj.getCompment("Render")) {
-          var size=obj.getCompment("Render").size;
-          var oPos=obj.getCompment("Transform").position;
-          var L=_position.x;
-          var R=_position.x+canvas.width;
-          var T=_position.y;
-          var B=_position.y+canvas.height;
-          if (oPos.x+size.w<L||oPos.x>R) {
-            return false;
-          }else if (oPos.y+size.h<T||oPos.y>B) {
-            return false;
-          }else{
-            return true;
-          }
-
-      }else{
-        return false;
-      }
-   };
-   return{
-    height:canvas.height,
-    width:canvas.width,
-   	position:_position,
-   	draw:_draw,
-    clear:_clear,
-    showFps:_showFps,
-    judgeInScreen:_judgeInScreen
-   }
-};
-Screen=Screen();
-
-var HitManager=function HitManager(){
-   var woeker=new Worker("Worker/hitTest.js");
-
-   var borderMap={};
-   var hiterMap={};
-
-   var onHitTaskMap={};
-   var onLeaveTaskMap={};
-
-   var borderList=[];
-   var hiterList=[];
-
-
-    woeker.onmessage=function onHitPPross(e){
-
-      var resu=e.data.hit;
-        var resuLeave=e.data.leave;
-
-        for (var i = resu.length - 1; i >= 0; i--) {
-         onHit(resu[i].hiter,resu[i].border,onHitTaskMap);
-       }
-
-       for (var i = resuLeave.length - 1; i >= 0; i--) {
-         onHit(resuLeave[i].hiter,resuLeave[i].border,onLeaveTaskMap);
-       }  
- 
-    };
-
-   var _registBorder=function _registBorder(border,isHiter){
-
-        if (isHiter) {
-          hiterList.push(border);
-          hiterMap[border.id]=border;
-        }else{
-           borderList.push(border);
-           borderMap[border.id]=border;
-        }
-        var gameObject=GE.findGameObjectById(border.id);
-        var compmentMap=gameObject.compmentMap;
-        var compNames=Object.keys(compmentMap);
-
-        var onHitTaskList=[];
-        var onLeaveTaskList=[];
-        for (var i = compNames.length - 1; i >= 0; i--) {
-             var hitFn=compmentMap[compNames[i]][isHiter? "onHit":"onHitted"];
-             var leaveFn=compmentMap[compNames[i]].onLeave;
-           if(hitFn){
-
-              onHitTaskList.push(hitFn.bind(compmentMap[compNames[i]]));
-           }
-
-           if (leaveFn) {
-              onLeaveTaskList.push(leaveFn.bind(compmentMap[compNames[i]]));
-           }
-        }
-
-        onHitTaskMap[gameObject.id]=onHitTaskList;
-        onLeaveTaskMap[gameObject.id]=onLeaveTaskList;
-   };
-
-   var _cancellBorder=function _cancellBordrt(id){
-
-      if (borderMap[id]) {
-        borderList.splice(borderList.indexOf(borderMap[id]),1);
-        delete  onHitTaskMap[id];
-        delete borderMap[id];
-      }
-      if (hiterMap[id]) {
-        hiterList.splice(hiterList.indexOf(hiterMap[id]),1);
-        delete  onHitTaskMap[id];
-        delete hiterMap[id];
-      }
-       delete onLeaveTaskMap[id];
-        
-   };
-
-   var _update=function hitUpdate(){
-    //console.log("send req..");
-      var req={};
-      req.border=borderList;
-      req.hiter=hiterList;
-      woeker.postMessage(req);
-
-   };
-
-   //after hited ,hiterBoder add attribuilt named position which record the position of the object hitting.
-   //at same time ,border also add attribuilt named position which record the position that objet hited it.
-   var onHit=function(hiterBorder,border,map){
-      var resultHitFns=map[hiterBorder.id];
-      var resultHitedFns=map[border.id];
-      for (var i = resultHitFns.length - 1; i >= 0; i--) {
-        resultHitFns[i](border);
-      }
-      for (var i = resultHitedFns.length - 1; i >= 0; i--) {
-        resultHitedFns[i](hiterBorder);
-      }
-   };
-
-  return{
-    registBorder:_registBorder,
-    cancellBorder:_cancellBorder,
-    update:_update
-  }
-
-};
-HitManager=HitManager();
-
 var GE=function () {
 
-	var impMap={Transform:"Transform"};
+	  var impMap={Transform:"Transform"};
     var completeNum=1;
 
     var gameObjMap={};
@@ -392,6 +114,9 @@ var GE=function () {
     var startTask=[];
     var updateTask=[];
     var updateTaskMap={};
+    var lateUpdateTask=[];
+    var lateUpdateTaskMap={};
+    var serviceList=[];
 
     var _import=function (nameList) {
     	for (var i = nameList.length - 1; i >= 0; i--) {
@@ -401,12 +126,19 @@ var GE=function () {
           loadScript(filename);
     		}
     	}
-    	
     };
     var loadScript=function(filename){
+      var path;
+      if (/Service$/.test(filename)) {
+        filename=filename.substring(0,filename.length-7);
+        serviceList.push(filename);
+        path="service/"+filename+".js"
+      }else{
+        path="compment/"+filename+".js";
+      }
         var script=document.createElement("script");
         script.type="text/javascript";
-        script.src="compment/"+filename+".js";
+        script.src=path;
         document.body.appendChild(script);
         script.onload=function(){
           completeNum++;
@@ -416,16 +148,24 @@ var GE=function () {
           }else{
             throw filename+ " is not a function";
           }
-          
+          // if (window[filename]&&serviceList.indexOf(filename)!==-1) {
+          //   throw "Service 【"+ filename+ "】  is existed";
+          // }
         }
+    };
+
+    var startService=function(){
+      for (var i = serviceList.length - 1; i >= 0; i--) {
+         window[serviceList[i]]=window[serviceList[i]]();
+      }
     };
 
     var listen=function (completeTask) {
     	if (Object.keys(impMap).length===completeNum) {
-    		Time.startTime=new Date().getTime();
+    		
+        startService();
     		completeTask();
-        stage.name="Stage";
-        stage.addCompment(new Stage());
+
     		prosessGame();
     	}else{
     		setTimeout(function() {listen(completeTask)}, 100);
@@ -449,7 +189,7 @@ var GE=function () {
          Screen.showFps();
         requestAnimationFrame(prosessGame);
         //setTimeout(prosessGame, 40);
-         Input.update();
+          doTask(lateUpdateTask);
 
     };
 
@@ -472,15 +212,26 @@ var GE=function () {
         if (!updateTaskMap[obj.id]) {
           updateTaskMap[obj.id]={};
         }
+        if (!lateUpdateTaskMap[obj.id]) {
+          lateUpdateTaskMap[obj.id]={};
+        }
+
         awakeTask.push(compment["awake"].bind(compment));
         startTask.push(compment["start"].bind(compment));
+
         var upTask=compment["update"].bind(compment);
         updateTaskMap[obj.id][compment.name]=upTask;
         updateTask.push(upTask);
+        if (compment["lateUpdate"]) {
+          var lateTsk=compment["lateUpdate"].bind(compment);
+          lateUpdateTaskMap[obj.id][compment.name]=lateTsk;
+          lateUpdateTask.push(lateTsk);
+        }
         //console.log(compment["update"]);
     };
 
     var _destroyGameObject=function(obj){
+
         if (gameObjMap[obj.id]) {
            delete gameObjMap[obj.id];
 
@@ -489,11 +240,16 @@ var GE=function () {
 
              var updateFn=updateTaskMap[obj.id][compNames[i]];
              var index=updateTask.indexOf(updateFn);
-              if (index!==-1) {
+             if (index!==-1) {
+               updateTask.splice(index,1);
+             }
 
-                 updateTask.splice(index,1);
-              }
-            
+             var lateUpdateFn=lateUpdateTaskMap[obj.id][compNames[i]];
+             var lateIndex=lateUpdateTask.indexOf(lateUpdateFn);
+             if (lateIndex!==-1) {
+               lateUpdateTask.splice(lateIndex,1);
+             }
+
            }
 
            HitManager.cancellBorder(obj.id);
@@ -530,4 +286,69 @@ var GE=function () {
 	};
 };
 GE=GE();
-var stage=new GameObject();
+
+var Util=function(){
+
+   var browser={
+      versions:function(){
+      var u = navigator.userAgent, app = navigator.appVersion;
+           return {//移动终端浏览器版本信息
+                trident: u.indexOf('Trident') > -1, //IE内核
+                presto: u.indexOf('Presto') > -1, //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/)||!!u.match(/AppleWebKit/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+                iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器
+                iPad: u.indexOf('iPad') > -1, //是否iPad
+                webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+              };
+            }(),
+            language:(navigator.browserLanguage || navigator.language).toLowerCase()
+    };
+    function _isMobile(){
+      var v=browser.versions;
+        return v.android||v.iPad||v.iPhone||v.ios;
+    };
+    function _guid() {
+      var re='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      });
+      return re;
+    };
+    function _stringify(obj){
+       var record=[];
+
+       function replacer(key,value){
+          if(value instanceof Image){
+              value={src:value.src};
+          }else if(!value._){
+             value._=1;
+             record.push(value);
+          }else{
+            return undefined;
+          }
+           return value;
+        };
+
+        var str=JSON.stringify(obj,replacer).replace(/"_":1/g,"").replace(/,}/g,"}");
+         
+        for (var i = record.length - 1; i >= 0; i--) {
+           delete record[i]._;
+        };
+        return str;
+    };
+    function _parseInt(number) {
+        return number*1 | 0 || 0;
+    }
+    return {
+      stringify:_stringify,
+      guid:_guid,
+      parseInt:_parseInt,
+      isMobile:_isMobile
+    }
+};
+Util=Util();
+

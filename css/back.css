@@ -16,12 +16,26 @@ canvas{
 	padding: auto;
 /*	width: 500px;
 	height:400px;*/
-	width: 100%;
-	height: 100%;
+	width: 99%;
+	height: 99%;
 }
 html{
 	width: 100%;
 	height: 100%;
 	margin: 0;
 	padding: 0;
+}
+
+.noscroll,
+.noscroll body {
+    overflow: hidden;
+}
+.noscroll body {
+    position: relative;
+}
+html{
+	overflow:hidden;
+}
+body{
+	overflow:hidden;
 }

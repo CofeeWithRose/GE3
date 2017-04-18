@@ -4,8 +4,8 @@ var c = require('child_process');
 var uri=process.cwd();
 exports.start = function(){
     http.createServer(function(request, response) {
-
     	var url=uri+request.url;
+        console.log(request.url);
         fs.readFile(url, '',function (err, data) {
 
             if (err){

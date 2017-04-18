@@ -1,15 +1,20 @@
 (function(){
-    GE.start(["Render","Animation","PlayerController","HitBorder","Stage","BorderFactory","Fire"],function(){
-
-
-
+    GE.start([
+        "Render",
+        "Animation",
+        "PlayerController",
+        "Fire",
+        "GravityMotion",
+        "BorderFactoryService",
+        "StageService"
+        ],function(){
      var map=new GameObject();
      map.name="map";
      var r=map.addCompment(new Render());
      r.setImage({src:"image/map/map1.png"});
      r.setSize(3328,224);
-     var mapTrans=map.getCompment('Transform').position={x:0,y:Screen.height-300};
-     stage.setChild(map);
+     var mapTrans=map.getCompment('Transform').position={x:0,y:(Screen.height-224)/1.2};
+     Stage.setChild(map);
 
      var bordeList=[];
      bordeList.push({x0:32,y0:110,x1:738,y1:118});
@@ -60,8 +65,7 @@
     player2.name="player2";
 
     var r=player2.addCompment(new Render());
-    r.setSize({w:70,h:70});
-
+    r.setSize({w:70,h:70}); 
     var anima2=player2.addCompment(new Animation());
     anima2.setAnimation("run",7,"image/player2");
     anima2.setAnimation("stand",1,"image/player2");
@@ -72,12 +76,9 @@
     anima2.setSpeed(5);
     player2.addCompment(new PlayerController());
     player2.addCompment(new Fire());
-    var border=player2.addCompment(new HitBorder());
-    border.isHiter=true;
-    border.isShow=false;
-    border.setBorder(20,r.size.h-1,20,1);
+    player2.addCompment(new GravityMotion());
     player2.getCompment("Transform").position={x:3,y:0};
-    stage.setChild(player2);
+    Stage.setChild(player2);
 
 });
 })();
