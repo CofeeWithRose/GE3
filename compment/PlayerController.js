@@ -78,7 +78,10 @@ function PlayerController(argument) {
         if (Screen.position.x<=0) {
         	Screen.position.x=0;
         }
-        Screen.position.x+=Util.parseInt((targetPosition-Screen.position.x)/30);
+        var sV=Util.parseInt((targetPosition-Screen.position.x)/50);
+/*        sV=Math.abs(sV)<Math.abs(v.x)? sV:v.x;*/
+
+        Screen.position.x+=sV;
 
 
 

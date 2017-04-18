@@ -22,7 +22,7 @@
      bordeList.push({x0:1154,y0:110,x1:1410,y1:118});
      bordeList.push({x0:1348,y0:80,x1:1858,y1:85});
      bordeList.push({x0:1827,y0:110,x1:2050,y1:118});
-     bordeList.push({x0:2018,y0:80,x1:2178,y1:90});
+     bordeList.push({x0:2021,y0:80,x1:2178,y1:90});
      bordeList.push({x0:2146,y0:145,x1:2240,y1:142});
      bordeList.push({x0:2211,y0:110,x1:2273,y1:118});
      bordeList.push({x0:2305,y0:145,x1:2368,y1:142});
@@ -37,7 +37,7 @@
      bordeList.push({x0:2977,y0:110,x1:3134,y1:115});
      bordeList.push({x0:3135,y0:145,x1:3166,y1:143});
      bordeList.push({x0:3168,y0:175,x1:3199,y1:176});
-     bordeList.push({x0:2977,y0:210,x1:3248,y1:215});
+     bordeList.push({x0:2980,y0:210,x1:3248,y1:215});
      bordeList.push({x0:3248,y0:180,x1:3326,y1:233,type:"end"});
      bordeList.push({x0:160,y0:145,x1:254,y1:142});
      bordeList.push({x0:259,y0:176,x1:288,y1:180});

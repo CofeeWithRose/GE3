@@ -21,8 +21,8 @@ function GravityMotion() {
 		size=trans.getCompment("Render").size;
 		var border=grondHiter.addCompment(new HitBorder());
 		border.isHiter=true;
-		border.isShow=true;
-		border.setBorder(20,size.h-1,20,1);
+		//border.isShow=true;
+		border.setBorder(27,size.h-1,16,1);
 		var hTrans=grondHiter.getCompment("Transform");
 		hTrans.position=trans.position;
         hTrans.onHit=hiterOnHit.bind(this);

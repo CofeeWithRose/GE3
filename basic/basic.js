@@ -148,9 +148,9 @@ var GE=function () {
           }else{
             throw filename+ " is not a function";
           }
-          // if (window[filename]&&serviceList.indexOf(filename)!==-1) {
-          //   throw "Service 【"+ filename+ "】  is existed";
-          // }
+          if (window[filename]&&serviceList.indexOf(filename)!==-1) {
+            throw "Service 【"+ filename+ "】  is existed";
+          }
         }
     };
 

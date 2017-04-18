@@ -1,13 +1,13 @@
 function InputComp() {
 	this.name="InputComp";
-	var center=Screen.width/2;
+	var center;
 	var identifier;
 	var startX=0;
 	var startY=0;
 
 
 	this.start=function(){
-
+        center=Screen.width/2;
 		if (Util.isMobile()) {
 			addMobileEvent();
 
