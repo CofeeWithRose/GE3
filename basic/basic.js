@@ -36,9 +36,11 @@ GameObject.prototype.addCompment = function(compment) {
 
   return compment;
 };
+
 GameObject.prototype.getCompment=function(name){
   return this.compmentMap[name];
 };
+
 GameObject.prototype.setParent=function(parentObj){
 
 	if (!(parentObj instanceof GameObject)) {
@@ -46,18 +48,29 @@ GameObject.prototype.setParent=function(parentObj){
 	}
 	if (this.name) {
 		 parentObj.children[this.id]=this;
+     this.parent=parentObj;
 	}
-  
+};
+GameObject.prototype.removeParent=function(){
+  if (this.parent) {
+    delete this.parent.children[this.id];
+    this.parent=undefined;
+  }
 };
 GameObject.prototype.setChild=function(obj){
-
   if (!(obj instanceof GameObject)) {
     throw obj +" is not a GameObject";
   }
   if (obj.id) {
      this.children[obj.id]=obj;
+     obj.parent=this;
   }
-  
+};
+GameObject.prototype.removeChild=function(obj){
+  if (this.children[obj.id]) {
+    delete this.children[obj.id];
+    obj.parent=undefined;
+  }
 };
 GameObject.prototype.destroySelf = function() {
     GE.destroyGameObject(this);
@@ -132,6 +145,7 @@ var GE=function () {
       if (/Service$/.test(filename)) {
         filename=filename.substring(0,filename.length-7);
         serviceList.push(filename);
+
         path="service/"+filename+".js"
       }else{
         path="compment/"+filename+".js";
@@ -148,17 +162,23 @@ var GE=function () {
           }else{
             throw filename+ " is not a function";
           }
-          if (window[filename]&&serviceList.indexOf(filename)!==-1) {
+/*          if (window[filename]&&serviceList.indexOf(filename)!==-1) {
             throw "Service 【"+ filename+ "】  is existed";
-          }
+          }*/
         }
     };
 
     var startService=function(){
+      var temp={};
       for (var i = serviceList.length - 1; i >= 0; i--) {
+        if(!temp[serviceList[i]]){
          window[serviceList[i]]=window[serviceList[i]]();
-      }
-    };
+         temp[serviceList[i]]=1;
+       }
+     }
+     temp=undefined;
+     serviceList=undefined;
+   };
 
     var listen=function (completeTask) {
     	if (Object.keys(impMap).length===completeNum) {
@@ -208,7 +228,6 @@ var GE=function () {
           checkName(obj);
           gameObjMap[obj.id]=obj;
         }
-
         if (!updateTaskMap[obj.id]) {
           updateTaskMap[obj.id]={};
         }
@@ -218,7 +237,6 @@ var GE=function () {
 
         awakeTask.push(compment["awake"].bind(compment));
         startTask.push(compment["start"].bind(compment));
-
         var upTask=compment["update"].bind(compment);
         updateTaskMap[obj.id][compment.name]=upTask;
         updateTask.push(upTask);
@@ -249,10 +267,13 @@ var GE=function () {
              if (lateIndex!==-1) {
                lateUpdateTask.splice(lateIndex,1);
              }
-
            }
-
+           delete updateTaskMap[obj.id];
+           delete lateUpdateTaskMap[obj.id];
            HitManager.cancellBorder(obj.id);
+           if (obj.parent) {
+              obj.removeParent();
+           }
         }
     };
 
@@ -350,5 +371,3 @@ var Util=function(){
       isMobile:_isMobile
     }
 };
-Util=Util();
-

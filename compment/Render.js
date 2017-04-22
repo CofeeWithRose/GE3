@@ -30,6 +30,7 @@ function Render() {
 				trans.rotation!=rotation)&&this.image.width)
 				{ //if the info changed redraw the image
 				context.clearRect(0,0,this.size.w,this.size.h);
+				//canvas.width=canvas.width;
 				context.save();
 				context.translate(point.x,point.y);
 				context.rotate(trans.rotation*PI/180);

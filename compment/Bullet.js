@@ -66,7 +66,7 @@ function Bullet() {
 			count++;
 
 		}
-		if (count>=2) {
+		if (count>=3) {
 			trans.gameObject.destroySelf();
 		}
 	};

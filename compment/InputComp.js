@@ -1,10 +1,10 @@
+GE.import(["UtilService"]);
 function InputComp() {
 	this.name="InputComp";
 	var center;
 	var identifier;
 	var startX=0;
 	var startY=0;
-
 
 	this.start=function(){
         center=Screen.width/2;

@@ -1,3 +1,4 @@
+GE.import(["ScreenService"]);
 var HitManager=function HitManager(){
    var woeker=new Worker("worker/hitTest.js");
 
@@ -77,6 +78,8 @@ var HitManager=function HitManager(){
    var _update=function hitUpdate(){
     //console.log("send req..");
       var req={};
+      var screen={x:Screen.position.x,y:Screen.position.y,w:Screen.width,h:Screen.height};
+      req.screen=screen;
       req.border=borderList;
       req.hiter=hiterList;
       woeker.postMessage(req);

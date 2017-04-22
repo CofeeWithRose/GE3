@@ -53,11 +53,17 @@ function PlayerController(argument) {
 			fire.setDegree(trans.scale.x==-1? 0:180);
 		}
 
+		if (Input.j||Input.J) {
+			fire.fire();
+		}
+
 		if ( motion.isOnGround) {
 			if (Input.getKeyDown("k")||Input.getKeyDown("K")) {	
                v.y=-10;
 			}
+			fire.setRate(10);
 		}else{
+			fire.setRate(20);
 			jump();
 		}
         moveScreen.call(this);
@@ -67,6 +73,7 @@ function PlayerController(argument) {
         anima.play("jump");
         trans.rotation-=15*trans.scale.x;
         fire.setDegree(trans.rotation);
+
 	};
 
 	var moveScreen=function(){

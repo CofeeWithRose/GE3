@@ -31,8 +31,8 @@ function GravityMotion() {
 	this.update=function update(){
 		if (!this.isOnGround) {
 			this.a.y=0.5;
-			if (this.v.y>=10) {
-				this.v.y=10;
+			if (this.v.y>=9) {
+				this.v.y=9;
 			}
 		}
 	    this.v.x+=this.a.x;

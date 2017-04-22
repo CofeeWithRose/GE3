@@ -4,26 +4,48 @@ function Fire() {
 	var trans;
 	var num=0;
 	var size;
+	var nextShootFrame=0;
+	var lastShootFrame=0;
 	this.isHiter;
     this.degree=0;
+    this.rate=1;
 	this.start=function(){
        trans=this.transform;
        var border=trans.getCompment("HitBorder");
        size=trans.getCompment("Render").size;
 	};
 	this.update=function(){
-		if (Time.frameCount%10==0) {
-			if (Input.j||Input.J) {
-				createBullet.call(this,this.degree);
-			}
+		
+		
+		if (nextShootFrame==Time.frameCount) {
+			createBullet.call(this,this.degree);
+			nextShootFrame=Time.frameCount+21-this.rate;
+			lastShootFrame=Time.frameCount;
 		}
-	}
+
+	};
+	this.lateUpdate=function(){
+		nextShootFrame=0;
+	};
 	this.setDegree=function(val){
 		this.degree=val;
 	};
 	this.setIsHiter=function(val){
 		this.isHiter=val;
 	};
+	this.setRate=function(val){
+		if (val<0||val>20) {
+			throw "rate must range 1 and 20 cant be "+val+"!"; 
+		}
+		this.rate=val;
+	}
+
+	this.fire=function(){
+
+		if (Time.frameCount>lastShootFrame+(21-this.rate)) {
+			nextShootFrame=Time.frameCount;
+		}	
+	}
 
 	var createBullet=function(degree){
 		num++;
