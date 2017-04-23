@@ -125,8 +125,13 @@ var GE=function () {
 
     var awakeTask=[];
     var startTask=[];
+
+   var earlyUpdateTask=[];
+    var earlyUpdateTaskMap={};
+
     var updateTask=[];
     var updateTaskMap={};
+
     var lateUpdateTask=[];
     var lateUpdateTaskMap={};
     var serviceList=[];
@@ -159,6 +164,7 @@ var GE=function () {
           var Fn=window[filename];
           if ((typeof Fn)=="function") {
             window[filename].prototype=Compment.prototype;
+            //console.log(filename+" add compment prototype");
           }else{
             throw filename+ " is not a function";
           }
@@ -204,12 +210,14 @@ var GE=function () {
          startTask=[];
          awakeTask=[];
          Screen.clear();
+         doTask(earlyUpdateTask);
          doTask(updateTask);
          Time.update();
          Screen.showFps();
         requestAnimationFrame(prosessGame);
         //setTimeout(prosessGame, 40);
           doTask(lateUpdateTask);
+
 
     };
 
@@ -234,6 +242,10 @@ var GE=function () {
         if (!lateUpdateTaskMap[obj.id]) {
           lateUpdateTaskMap[obj.id]={};
         }
+         if (!earlyUpdateTaskMap[obj.id]) {
+          earlyUpdateTaskMap[obj.id]={};
+        }
+
 
         awakeTask.push(compment["awake"].bind(compment));
         startTask.push(compment["start"].bind(compment));
@@ -244,6 +256,11 @@ var GE=function () {
           var lateTsk=compment["lateUpdate"].bind(compment);
           lateUpdateTaskMap[obj.id][compment.name]=lateTsk;
           lateUpdateTask.push(lateTsk);
+        }
+         if (compment["earlyUpdate"]) {
+          var lateTsk=compment["earlyUpdate"].bind(compment);
+          earlyUpdateTaskMap[obj.id][compment.name]=lateTsk;
+          earlyUpdateTask.push(lateTsk);
         }
         //console.log(compment["update"]);
     };
@@ -267,9 +284,16 @@ var GE=function () {
              if (lateIndex!==-1) {
                lateUpdateTask.splice(lateIndex,1);
              }
+
+             var earlyUpdateFn=earlyUpdateTaskMap[obj.id][compNames[i]];
+             var earlyIndex=earlyUpdateTask.indexOf(lateUpdateFn);
+             if (earlyIndex!==-1) {
+               earlyUpdateTask.splice(earlyIndex,1);
+             }
            }
            delete updateTaskMap[obj.id];
            delete lateUpdateTaskMap[obj.id];
+           delete earlyUpdateTaskMap[obj.id];
            HitManager.cancellBorder(obj.id);
            if (obj.parent) {
               obj.removeParent();

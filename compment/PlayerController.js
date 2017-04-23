@@ -26,6 +26,7 @@ function PlayerController(argument) {
         anima.play("stand");
 	};
 	this.update=function(){
+		
 		if ((Input.s||Input.S)&&(Input.k||Input.K)) {
 			  motion.isOnGround=false;
               fire.setDegree(90);

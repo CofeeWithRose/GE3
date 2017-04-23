@@ -6,9 +6,8 @@ onmessage=function hitTest(e) {
 	result.leave=[];
 	var hiters=e.data.hiter;
 	var borders=e.data.border;
-	var s=e.data.screen;
-	filterBorder(hiters,s);
-	filterBorder(borders,s);
+	filterBorder(hiters,e.data.screen);
+	filterBorder(borders,e.data.screen);
 
 	for (var i = hiters.length - 1; i >= 0; i--) {
 		var hit=hiters[i];
@@ -40,7 +39,6 @@ onmessage=function hitTest(e) {
 			}
 		}
 	}
-
 	postMessage(result);
 }
 
@@ -53,7 +51,7 @@ var isAtouchB=function(A,B){
 	}
 }
 
-var filterBorder=function(list,s,x){
+var filterBorder=function(list,screen,x){
 	var f=0;	
 	for (var i = list.length - 1; i >= 0; i--) {
 		f++;
@@ -62,8 +60,8 @@ var filterBorder=function(list,s,x){
 		border.y=border.position.y+border.transPosition.y;
 		border.w=border.size.w;
 		border.h=border.size.h;
-		if (!isAtouchB(s,border)) {
-			list.splice(list.indexOf(border),1);
+		if (!isAtouchB(screen,border)) {
+			list.splice(i,1);
 		}
 	}
 	

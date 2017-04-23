@@ -77,7 +77,7 @@
     player2.addCompment(new PlayerController());
     player2.addCompment(new Fire());
     player2.addCompment(new GravityMotion());
-    player2.getCompment("Transform").position={x:3,y:0};
+    player2.getCompment("Transform").position={x:Screen.width/2,y:0};
     Stage.setChild(player2);
 
 });

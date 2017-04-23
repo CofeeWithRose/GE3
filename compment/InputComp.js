@@ -1,4 +1,4 @@
-GE.import(["UtilService"]);
+GE.import(["UtilService","TouchComp"]);
 function InputComp() {
 	this.name="InputComp";
 	var center;
@@ -7,13 +7,15 @@ function InputComp() {
 	var startY=0;
 
 	this.start=function(){
+        
+        Input.touches=[];
+        Input.leavedTouchs=[];
         center=Screen.width/2;
 		if (Util.isMobile()) {
-			addMobileEvent();
-
-		}else{
-			addPCEvent();
-		};
+            addMobileEvent();
+			addTouchInput();
+		}
+		addPCEvent();
 	};
 
 	this.lateUpdate=function(){
@@ -26,10 +28,11 @@ function InputComp() {
       for (var i = u.length - 1; i >= 0; i--) {
         Input.up[u[i]]=false;
       }
-
+        Input.leavedTouchs=[];
     };
 
     var addPCEvent=function(){
+
       window.addEventListener("keydown",function(e){
 
         if (!Input[e.key]) {
@@ -42,77 +45,38 @@ function InputComp() {
         Input.up[e.key]=true;
       });
     };
-
     var addMobileEvent=function(){
-    	document.body.addEventListener('touchmove', function(event) {
-    		event.preventDefault();
-    		for (var i = event.touches.length - 1; i >= 0; i--) {
+        document.body.addEventListener('touchmove', function(event) {
+            event.preventDefault();
 
-    			if (event.touches[i].clientX<=center&&identifier===event.touches[i].identifier) {
+            Input.touches=event.touches;
 
-    				var dtY=event.touches[i].clientY-startY;
-    				var dtX=event.touches[i].clientX-startX;
-    				var isY=Math.abs(dtY)>50; 
-    				if (isY) {
-    					if (dtY>20){
-    						Input.w=false;
-    						Input.s=true;
-    					}else if (dtY<-20){
-    						Input.w=true;
-    						Input.s=false;
-    					}
-    				}else{
+        }, false); 
 
-    					if (dtX<-10) {
-    						Input.a=true;
-    						Input.d=false;
-    					}else if (dtX>10){
-    						Input.d=true;
-    						Input.a=false;
+        document.body.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+          
+           Input.touches=event.touches;
+            
+        }, false); 
 
-    					}
-
-    				}
-    			}
-    		}
-
-
-    	}, false); 
-
-    	document.body.addEventListener('touchstart', function(event) {
-    		event.preventDefault();
-
-    		Input.j=true;
-
-    		for (var i = event.touches.length - 1; i >= 0; i--) {
-
-    			if (event.touches[i].clientX>center) {
-    				Input.down.k=true;
-    				Input.k=true;
-    			}else{
-    				identifier=event.touches[i].identifier;
-    				startY=event.touches[i].clientY;
-    				startX=event.touches[i].clientX;
-    			}
-    		}
-    	}, false); 
-
-    	document.body.addEventListener('touchend', function(event) {
-    		event.preventDefault();
-
-    		for (var i = event.changedTouches.length - 1; i >= 0; i--) {
-
-    			if (identifier===event.changedTouches[i].identifier) {
-    				Input.a=false;
-    				Input.d=false;
-    			}
-
-    			Input.k=false;
-    			Input.s=false;
-    			Input.w=false;
-    			Input.up.j=true;
-    		}
-
-    	}, false); 
+        document.body.addEventListener('touchend', function(event) {
+            event.preventDefault();
+            //Stage.get("touch length---"+ Input.touchs.length);
+            Input.touches=event.touches;
+            //Input.leavedTouchs= event.changedTouches;
+            var keys=Object.keys(event.changedTouches);
+            for (var i = keys.length - 1; i >= 0; i--) {
+               Input.leavedTouchs.push(event.changedTouches[keys[i]]);
+            }
+            //console.log(Input.leavedTouchs);
+  
+        }, false); 
     };
+    var addTouchInput=function(){
+        var touchInput=new GameObject();
+        touchInput.name="touchInput";
+        touchInput.addCompment(new TouchComp());
+    };
+
 };
