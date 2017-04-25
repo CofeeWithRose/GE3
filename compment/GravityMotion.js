@@ -30,15 +30,16 @@ function GravityMotion() {
 	};
 	this.update=function update(){
 		if (!this.isOnGround) {
-			this.a.y=0.5;
-			if (this.v.y>=9) {
-				this.v.y=9;
+			this.a.y=9;
+			if (this.v.y>=90) {
+				this.v.y=90;
 			}
 		}
-	    this.v.x+=this.a.x;
-	    this.v.y+=this.a.y;
-        trans.position.y+=this.v.y;
-        trans.position.x+=this.v.x;
+
+	    this.v.x+=this.a.x*Time.delTime;
+	    this.v.y+=this.a.y*Time.delTime;
+        trans.position.y+=this.v.y*Time.delTime;
+        trans.position.x+=this.v.x*Time.delTime;
 	};
 
 	var hiterOnHit=function onHit(other){
@@ -68,5 +69,8 @@ function GravityMotion() {
 	};
 	this.setA=function(val){
 		this.a=val;
+	};
+	this.setIsOnGround=function(val){
+		this.isOnGround=val;
 	}
 }

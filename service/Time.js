@@ -8,7 +8,7 @@ function Time(){
         update:function(){
             var now=performance.now();
             Time.frameCount++;
-            Time.delTime=now-Time.lastTime;
+            Time.delTime=Util.parseInt(now-Time.lastTime)/100;
             Time.lastTime=now;
             Time.gamTime=now-Time.startTime;
         }

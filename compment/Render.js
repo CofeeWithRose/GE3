@@ -1,3 +1,4 @@
+GE.import(["UtilService"])
 function Render() {
 	this.name="Render";
 	var PI=Math.PI;
@@ -35,14 +36,14 @@ function Render() {
 				context.translate(point.x,point.y);
 				context.rotate(trans.rotation*PI/180);
 	            context.scale(trans.scale.x,trans.scale.y);
-				context.drawImage(this.image,-point.x,-point.y,this.size.w,this.size.h);
+				context.drawImage(this.image,Util.parseInt(-point.x),Util.parseInt(-point.y),this.size.w,this.size.h);
 				context.restore();
 				rotation=trans.rotation;
 				scale.x=trans.scale.x;
 				scale.y=trans.scale.y;
 				//imageChanged=false;
 		   }
-		 Screen.draw(canvas,trans.position.x,trans.position.y,this.size.w,this.size.h);
+		 Screen.draw(canvas,Util.parseInt(trans.position.x),Util.parseInt(trans.position.y),this.size.w,this.size.h);
 		}
 	};
 	this.setImage=function(img){

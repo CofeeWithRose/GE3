@@ -139,6 +139,9 @@ var GE=function () {
     var _import=function (nameList) {
     	for (var i = nameList.length - 1; i >= 0; i--) {
     		var filename=nameList[i];
+        if (/Service$/.test(filename)) {
+         serviceList.push(filename.substring(0,filename.length-7));
+        }
     		if (!(impMap[filename]||(window[filename] instanceof Compment))) {
     			impMap[filename]=filename;
           loadScript(filename);
@@ -149,8 +152,6 @@ var GE=function () {
       var path;
       if (/Service$/.test(filename)) {
         filename=filename.substring(0,filename.length-7);
-        serviceList.push(filename);
-
         path="service/"+filename+".js"
       }else{
         path="compment/"+filename+".js";
@@ -176,6 +177,7 @@ var GE=function () {
 
     var startService=function(){
       var temp={};
+
       for (var i = serviceList.length - 1; i >= 0; i--) {
         if(!temp[serviceList[i]]){
          window[serviceList[i]]=window[serviceList[i]]();

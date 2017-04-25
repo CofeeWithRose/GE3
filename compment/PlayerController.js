@@ -1,7 +1,7 @@
 GE.import(["InputService","ScreenService","TimeService"]);
 function PlayerController(argument) {
 	this.name="PlayerController";
-	this.v=3;
+	this.v=15;
 	var anima;
 	var trans;
 	var size;
@@ -60,19 +60,27 @@ function PlayerController(argument) {
 
 		if ( motion.isOnGround) {
 			if (Input.getKeyDown("k")||Input.getKeyDown("K")) {	
-               v.y=-10;
+               v.y=-40;
 			}
 			fire.setRate(10);
 		}else{
 			fire.setRate(20);
 			jump();
 		}
+
+		if (trans.position.y>Screen.height+size.h) {
+			trans.position.x=300;
+			trans.position.y=0;
+			motion.isOnGround=false;
+			v.y=0;
+		}
+
         moveScreen.call(this);
 	};
 
 	var jump=function rotate(){
         anima.play("jump");
-        trans.rotation-=15*trans.scale.x;
+        trans.rotation-=70*trans.scale.x*Time.delTime;
         fire.setDegree(trans.rotation);
 
 	};
@@ -93,6 +101,10 @@ function PlayerController(argument) {
 
 
 
+	};
+
+	this.setV=function(val){
+		this.v=val;
 	};
 
 

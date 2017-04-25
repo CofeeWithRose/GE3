@@ -6,7 +6,7 @@ function Bullet() {
     var count=0;
     var isHit;
 
-    this.V=5;
+    this.V=20;
     this.degree=0;
     this.initPosition={x:0,y:0};
 
@@ -16,8 +16,8 @@ function Bullet() {
 		
 		anim=trans.getCompment("Animation");
 		var d=this.degree*Math.PI/180;
-        v.x=Util.parseInt(Math.cos(d)*this.V);
-        v.y=Util.parseInt(Math.sin(d)*this.V);
+        v.x=(Math.cos(d)*this.V);
+        v.y=(Math.sin(d)*this.V);
         trans.position.x=this.initPosition.x+v.x;
         trans.position.y=this.initPosition.y+v.y;
 
@@ -26,14 +26,14 @@ function Bullet() {
 	this.update=function(){
 		
 		anim.play("fly");
-        trans.position.x+=v.x;
-        trans.position.y+=v.y;
+        trans.position.x+=v.x*Time.delTime;
+        trans.position.y+=v.y*Time.delTime;
 
         if (isHit) {
         	destroy();
         }
 
-        if (!Screen.judgeInScreen(trans.gameObject)) {
+        if (!Screen.outTest(trans.gameObject)) {
         	isHit=true;
         }
 	};

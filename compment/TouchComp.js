@@ -38,6 +38,7 @@ function TouchComp() {
 	btnR.name="btnR";
 
 	var arrowCenterPos={x:0,y:0};
+
 	this.start=function(){
 
 		trans=this.transform;
@@ -72,7 +73,7 @@ function TouchComp() {
 		btnAnim.setAnimation("up",1,"image/button");
 		btnAnim.setAnimation("down",1,"image/button");
 		var btnAMot=btnA.addCompment(new UImove());
-		btnAMot.setPosition(Screen.width*19/20-btnARen.size.w*2,Screen.height*2/3);
+		btnAMot.setPosition(Screen.width-btnARen.size.w*2,Screen.height*2/3);
 		var btnAUI=btnA.addCompment(new UIBtn());
 		btnAUI.setKey("j");
 		//BtnB
@@ -82,15 +83,9 @@ function TouchComp() {
 		btnBnim.setAnimation("up",1,"image/button");
 		btnBnim.setAnimation("down",1,"image/button");
 		var btnBMot=btnB.addCompment(new UImove());
-		btnBMot.setPosition(Screen.width*19/20-btnBRen.size.w,Screen.height*2/3);
+		btnBMot.setPosition(Screen.width-btnBRen.size.w,Screen.height*2/3);
 		var btnBUI=btnB.addCompment(new UIBtn());
 		btnBUI.setKey("k");
 
-
 	};
-	this.update=function(){
-		
-	};
-
-
 };

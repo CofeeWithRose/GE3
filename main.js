@@ -13,7 +13,7 @@
      var r=map.addCompment(new Render());
      r.setImage({src:"image/map/map1.png"});
      r.setSize(3328,224);
-     var mapTrans=map.getCompment('Transform').position={x:0,y:(Screen.height-224)/1.2};
+     var mapTrans=map.getCompment('Transform').position={x:0,y:(Screen.height-224)};
      Stage.setChild(map);
 
      var bordeList=[];

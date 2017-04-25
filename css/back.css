@@ -10,6 +10,7 @@ body{
 	position: absolute;
 	right:10px;
 	color: white;
+	width: 60px;
 }
 canvas{
 	margin:0 auto;

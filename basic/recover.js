@@ -31,7 +31,7 @@ function _buildCompment(obj,compMap){
       if ("function"==(typeof newComp[setMethodName])) {
          newComp[setMethodName](compMap[compNames[i]][compAttrs[j]]);
        }else{
-         throw setMethodName +" is not  a function";
+         throw setMethodName +" is not  a function in "+compNames[i]+" compment ";
        }
        
 /*       console.log(setMethodName+": ");
