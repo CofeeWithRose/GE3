@@ -35,7 +35,7 @@ function Fire() {
 	};
 	this.setRate=function(val){
 		if (val<0||val>20) {
-			throw "rate must range 1 and 20 cant be "+val+"!"; 
+			throw "rate must range 1 to 20 cant be "+val+"!"; 
 		}
 		this.rate=val;
 	}

@@ -65,14 +65,14 @@ var HitManager=function HitManager(){
         borderList.splice(borderList.indexOf(borderMap[id]),1);
         delete  onHitTaskMap[id];
         delete borderMap[id];
+       
       }
       if (hiterMap[id]) {
         hiterList.splice(hiterList.indexOf(hiterMap[id]),1);
         delete  onHitTaskMap[id];
         delete hiterMap[id];
       }
-       delete onLeaveTaskMap[id];
-        
+        delete onLeaveTaskMap[id];
    };
 
    var _update=function hitUpdate(){

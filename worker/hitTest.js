@@ -44,11 +44,7 @@ onmessage=function hitTest(e) {
 
 var isAtouchB=function(A,B){
 
-	if ((A.x<B.x+B.w&&A.x+A.w>B.x)&&(A.y+A.h>B.y&&A.y<B.y+B.h)) {
-		return true;
-	}else{
-		return false;
-	}
+	return A.x<B.x+B.w&&A.x+A.w>B.x&&A.y+A.h>B.y&&A.y<B.y+B.h;
 }
 
 var filterBorder=function(list,screen,x){

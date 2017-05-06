@@ -12,6 +12,7 @@ function GravityMotion() {
 
 	var grondHiter;
 	var size;
+	var groundExp=/ground-/;
 
 	this.start=function start(){
 
@@ -30,28 +31,27 @@ function GravityMotion() {
 	};
 	this.update=function update(){
 		if (!this.isOnGround) {
-			this.a.y=9;
-			if (this.v.y>=90) {
-				this.v.y=90;
+			this.a.y=0.5;
+			if (this.v.y>=9) {
+				this.v.y=9;
 			}
 		}
 
-	    this.v.x+=this.a.x*Time.delTime;
-	    this.v.y+=this.a.y*Time.delTime;
-        trans.position.y+=this.v.y*Time.delTime;
-        trans.position.x+=this.v.x*Time.delTime;
+	    this.v.x+=this.a.x*1;
+	    this.v.y+=this.a.y*1;
+        trans.position.y+=this.v.y*1;
+        trans.position.x+=this.v.x*1;
 	};
 
 	var hiterOnHit=function onHit(other){
 
-		if (/ground-/.test(other.obj.name)) {
+		if (groundExp.test(other.obj.name)) {
 			lastHite=other.id;
 			this.a.y=0;
 			this.v.y=0;
 			trans.rotation=0;
 			trans.position.y=other.y-size.h+1;
 			this.isOnGround=true;
-        
     	}
 	};
 

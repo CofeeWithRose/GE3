@@ -13,7 +13,7 @@ function HitBorder() {
   this.isHiter=false;
 
 
-  this.awake=function(){
+  this.start=function(){
 
     trans=this.transform;
     render=trans.getCompment("Render");

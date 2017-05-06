@@ -1,7 +1,7 @@
 GE.import(["InputService","ScreenService","TimeService"]);
 function PlayerController(argument) {
 	this.name="PlayerController";
-	this.v=15;
+	this.v=3;
 	var anima;
 	var trans;
 	var size;
@@ -60,7 +60,7 @@ function PlayerController(argument) {
 
 		if ( motion.isOnGround) {
 			if (Input.getKeyDown("k")||Input.getKeyDown("K")) {	
-               v.y=-40;
+               v.y=-10;
 			}
 			fire.setRate(10);
 		}else{
@@ -80,7 +80,7 @@ function PlayerController(argument) {
 
 	var jump=function rotate(){
         anima.play("jump");
-        trans.rotation-=70*trans.scale.x*Time.delTime;
+        trans.rotation-=15*trans.scale.x*1;
         fire.setDegree(trans.rotation);
 
 	};

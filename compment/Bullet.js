@@ -6,7 +6,7 @@ function Bullet() {
     var count=0;
     var isHit;
 
-    this.V=20;
+    this.V=5;
     this.degree=0;
     this.initPosition={x:0,y:0};
 
@@ -26,8 +26,8 @@ function Bullet() {
 	this.update=function(){
 		
 		anim.play("fly");
-        trans.position.x+=v.x*Time.delTime;
-        trans.position.y+=v.y*Time.delTime;
+        trans.position.x+=v.x*1;
+        trans.position.y+=v.y*1;
 
         if (isHit) {
         	destroy();
@@ -49,7 +49,7 @@ function Bullet() {
 		this.initPosition.y=pos.y;
 	}
 
-	this.onHit=function(other){
+	//this.onHit=function(other){
        
     /*   var otherObj=GE.findGameObjectById(other.id);
       
@@ -57,14 +57,13 @@ function Bullet() {
        		isHit=true;
        }*/
 
-	};
+	//};
 	var destroy=function(){
 		v.x=0;
 		v.y=0;
 		anim.play("destroy");
 		if (Time.frameCount%4==0) {
 			count++;
-
 		}
 		if (count>=3) {
 			trans.gameObject.destroySelf();
