@@ -6,6 +6,8 @@ function Fire() {
 	var size;
 	var nextShootFrame=0;
 	var lastShootFrame=0;
+	var isfire=true;
+
 	this.isHiter;
     this.degree=0;
     this.rate=1;
@@ -15,18 +17,20 @@ function Fire() {
        size=trans.getCompment("Render").size;
 	};
 	this.update=function(){
-		
-		
+
 		if (nextShootFrame==Time.frameCount) {
+
 			createBullet.call(this,this.degree);
 			nextShootFrame=Time.frameCount+21-this.rate;
 			lastShootFrame=Time.frameCount;
 		}
 
 	};
+
 	this.lateUpdate=function(){
 		nextShootFrame=0;
 	};
+
 	this.setDegree=function(val){
 		this.degree=val;
 	};
@@ -43,7 +47,9 @@ function Fire() {
 	this.fire=function(){
 
 		if (Time.frameCount>lastShootFrame+(21-this.rate)) {
+
 			nextShootFrame=Time.frameCount;
+
 		}	
 	}
 

@@ -1,5 +1,6 @@
 GE.import(["InputComp","UtilService"]);
 function Input(){
+
   var fn=new GameObject();
   fn.name="Input";
   fn.addCompment(new InputComp());
