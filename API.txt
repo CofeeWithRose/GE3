@@ -1,0 +1,49 @@
+工作流程
+
+	简述：
+
+	GE游戏分为4个阶段：
+
+	一.GE.start（list,FN）游戏入口，此时GE会导入list中声明的依赖
+	
+	二.所有依赖加载后，GE自动实例化所有的service，每个service只会初始化一次；
+
+	三.执行FN回调，在FN中编写游戏初始化时的游戏对象（GameObject）,游戏对象的所有逻辑与行为都在compment中运行；在FN中可以调用gameObject.addCompment(new Render())为GameObject添加行为。在调用addCompment方法时，会把compmemt中awake,start,earlyUpdate,update,lateUpdate，onDestory,6个方法添加至GE的任务队列中
+
+	四.GE会执行任务队列中的awake,start,earlyUpdate,update,lateUpdate5个方法，执行规则
+
+	   awake：组件最先执行的方法，每个组件只执行一次
+	   start：当当前所有的组件执行完awake后执行，每个组件只执行一次
+	   earlyUpdate：每当浏览器渲染时执行
+	   update：当所有compment的earlyUpdate执行完成后执行，每当浏览器渲染时执行,一般将逻辑写于该函数中
+	   lateUpdate：当所有compment的lateUpdate执行完成后执行，每当浏览器渲染时执行
+	   onDestory:当所操控的游戏物体销毁（gameObject.destorySelf）时执行
+
+
+
+
+   
+	1.加载依赖阶段
+
+	  	a.发生的情况
+
+	  		依赖加载只发生于两个阶段：GE.start和GE.import
+
+	    	GE.start（list,FN）方法为为启动游戏方法，在list中列出所需的依赖，在所有依赖加载完成后，GE会回调FN函数；在此只需声明FN中所需用到的compment与service即可，compment与service中的依赖应该在书写compment中使用GE.import方法声明。
+
+	    	GE.import(list)方法一般书写于compment的第一行，当compment被加载时执行，在此也只需书写当前compment所需的compment与service。
+
+	  	b.加载时依赖时依赖的书写规则
+
+	  		依赖在start和import中都是以数组的方式声明；
+
+	  		在GE中只会在两个文件夹下加载依赖：compment文件夹与service文件夹。默认情况下，GE会从compment文件夹加载，若要加载service则必须在依赖后加上Service字样。
+	  		例:若从service下加载Input,从compment文件夹加载Render，则GE.import(["InputService","Render"])
+
+  	2.
+
+
+
+
+
+

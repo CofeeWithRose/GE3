@@ -10,13 +10,11 @@ body{
 	position: absolute;
 	right:10px;
 	color: white;
-	width: 60px;
+/*	width: 60px;*/
 }
 canvas{
 	margin:0 auto;
 	padding: auto;
-/*	width: 500px;
-	height:400px;*/
 	width: 99%;
 	height: 99%;
 }
@@ -40,7 +38,6 @@ html{
 body{
 	overflow:hidden;
 }
-
 canvas,body,html,image{
 -webkit-touch-callout:none;
 -webkit-user-select:none;

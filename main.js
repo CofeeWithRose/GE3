@@ -1,13 +1,14 @@
-(function(){
-    GE.start([
-        "Render",
-        "Animation",
-        "PlayerController",
-        "Fire",
-        "GravityMotion",
-        "BorderFactoryService",
-        "StageService"
-        ],function(){
+GE.start([
+    "Render",
+    "Animation",
+    "PlayerController",
+    "Fire",
+    "GravityMotion",
+    "BorderFactoryService",
+    "StageService"
+    ],
+    function(){
+
      var map=new GameObject();
      map.name="map";
      var r=map.addCompment(new Render());
@@ -61,27 +62,26 @@
      BorderFactory(bordeList,mapTrans.y,0,map);
 
 
-    var player2=new GameObject();
-    player2.name="player2";
+     var player2=new GameObject();
+     player2.name="player2";
 
-    var r=player2.addCompment(new Render());
-    r.setSize({w:70,h:70}); 
-    var anima2=player2.addCompment(new Animation());
-    anima2.setAnimation("run",7,"image/player2");
-    anima2.setAnimation("stand",1,"image/player2");
-    anima2.setAnimation("up45",1,"image/player2");
-    anima2.setAnimation("up90",1,"image/player2");
-    anima2.setAnimation("jump",1,"image/player2");
-    anima2.setAnimation("down",1,"image/player2");
-    anima2.setSpeed(5);
-    player2.addCompment(new PlayerController());
-    player2.addCompment(new Fire());
-    player2.addCompment(new GravityMotion());
-    player2.getCompment("Transform").position={x:Screen.width/2,y:0};
-    Stage.setChild(player2);
+     var r=player2.addCompment(new Render());
+     r.setSize({w:70,h:70}); 
+     var anima2=player2.addCompment(new Animation());
+     anima2.setAnimation("run",7,"image/player2");
+     anima2.setAnimation("stand",1,"image/player2");
+     anima2.setAnimation("up45",1,"image/player2");
+     anima2.setAnimation("up90",1,"image/player2");
+     anima2.setAnimation("jump",1,"image/player2");
+     anima2.setAnimation("down",1,"image/player2");
+     anima2.setSpeed(5);
+     player2.addCompment(new PlayerController());
+     player2.addCompment(new Fire());
+     player2.addCompment(new GravityMotion());
+     player2.getCompment("Transform").position={x:Screen.width/2,y:0};
+     Stage.setChild(player2);
 
-});
-})();
+ });
 
 
 

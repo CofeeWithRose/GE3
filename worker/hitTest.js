@@ -56,9 +56,9 @@ var filterBorder=function(list,screen,x){
 		border.y=border.position.y+border.transPosition.y;
 		border.w=border.size.w;
 		border.h=border.size.h;
-		if (!isAtouchB(screen,border)) {
-			list.splice(i,1);
-		}
+		// if (!isAtouchB(screen,border)) {
+		// 	list.splice(i,1);
+		// }
 	}
 	
 }

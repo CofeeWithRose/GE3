@@ -12,7 +12,6 @@ function HitBorder() {
   this.isShow=false;
   this.isHiter=false;
 
-
   this.start=function(){
 
     trans=this.transform;
@@ -42,7 +41,7 @@ function HitBorder() {
       var  rObj=new GameObject();
        rObj.name="border_"+trans.gameObject.name;
        rTrans=rObj.getCompment('Transform');
-      var rRender=rObj.addCompment(new Render());
+       var rRender=rObj.addCompment(new Render());
        rRender.setImage({src:"image/border/border.png"});
        rRender.setSize(this.border.size); 
    //   console.log(rTrans.gameObject);
@@ -58,6 +57,10 @@ function HitBorder() {
          rTrans.position.y=this.border.position.y+trans.position.y;
     }
 
+  };
+  this.onDestory=function destory(){
+    //console.log("destory....");
+     HitManager.cancellBorder(this.border.id);
   };
 
 

@@ -20,16 +20,16 @@ GameObject.prototype.getChildByName=function(name){
 GameObject.prototype.addCompment = function(compment) {
 
 	if (!(compment instanceof Compment)) {
-        throw compment +" is not a compment";
-	}
+    throw compment +" is not a compment";
+  }
   if(compment.name==="Transform"){
     var keys=Object.keys(compment);
     for (var i = keys.length - 1; i >= 0; i--) {
       this.compmentMap.Transform[keys[i]]=compment[keys[i]];
     }
   }else{
-		this.compmentMap[compment.name]=compment;
-		compment.transform=this.compmentMap.Transform;
+    this.compmentMap[compment.name]=compment;
+    compment.transform=this.compmentMap.Transform;
   }
   var THIS=this;
   requestAnimationFrame(function(){GE.addTask(THIS,compment);});
@@ -47,9 +47,9 @@ GameObject.prototype.setParent=function(parentObj){
 		throw parentObj +" is not a GameObject";
 	}
 	if (this.name) {
-		 parentObj.children[this.id]=this;
-     this.parent=parentObj;
-	}
+   parentObj.children[this.id]=this;
+   this.parent=parentObj;
+ }
 };
 GameObject.prototype.removeParent=function(){
   if (this.parent) {
@@ -62,9 +62,9 @@ GameObject.prototype.setChild=function(obj){
     throw obj +" is not a GameObject";
   }
   if (obj.id) {
-     this.children[obj.id]=obj;
-     obj.parent=this;
-  }
+   this.children[obj.id]=obj;
+   obj.parent=this;
+ }
 };
 GameObject.prototype.removeChild=function(obj){
   if (this.children[obj.id]) {
@@ -73,7 +73,7 @@ GameObject.prototype.removeChild=function(obj){
   }
 };
 GameObject.prototype.destroySelf = function() {
-    GE.destroyGameObject(this);
+  GE.destroyGameObject(this);
 };
 
 
@@ -100,78 +100,81 @@ Compment.prototype.setName = function(val) {
 };
 
 function Transform(){
-/*  console.log("trans id : "+this.id);*/
+  /*  console.log("trans id : "+this.id);*/
   this.compmentMap;
-    this.name="Transform";
-    this.position={x:0,y:0};
-    this.rotation=0;
-    this.scale={x:1,y:1};
-    var _pro=this;
-    this.setPosition=function(val){
-      _pro.position=val;
-    };
-    this.setRotation=function(val){
-      _pro.rotation=val;
-    };
-    this.setScale=function(val){
-       _pro.scale=val;
-    };
+  this.name="Transform";
+  this.position={x:0,y:0};
+  this.rotation=0;
+  this.scale={x:1,y:1};
+  var _pro=this;
+  this.setPosition=function(val){
+    _pro.position=val;
+  };
+  this.setRotation=function(val){
+    _pro.rotation=val;
+  };
+  this.setScale=function(val){
+   _pro.scale=val;
+ };
 }
 Transform.prototype=Compment.prototype;
 Transform.prototype.getCompment=function(name){
-    return this.compmentMap[name];
+  return this.compmentMap[name];
 };
 
 var GE=function () {
 
-	  var impMap={Transform:"Transform"};
-    var completeNum=1;
+ var impMap={Transform:"Transform"};
+ var completeNum=1;
 
-    var gameObjMap={};
+ var gameObjMap={};
 
-    var awakeTask=[];
-    var startTask=[];
+ var awakeTask=[];
+ var startTask=[];
 
-    var earlyUpdateTask=[];
-    var earlyUpdateTaskMap={};
+ var earlyUpdateTask=[];
+ var earlyUpdateTaskMap={};
 
-    var updateTask=[];
-    var updateTaskMap={};
+ var updateTask=[];
+ var updateTaskMap={};
 
-    var lateUpdateTask=[];
-    var lateUpdateTaskMap={};
+ var lateUpdateTask=[];
+ var lateUpdateTaskMap={};
 
-    var serviceList=[];
+ var onDestoryTask=[];
+ var onDestoryTaskMap={};
 
-    var _import=function (nameList) {
-    	for (var i = nameList.length - 1; i >= 0; i--) {
-    		var filename=nameList[i];
-        if (/Service$/.test(filename)) {
-         serviceList.push(filename.substring(0,filename.length-7));
-        }
-    		if (!(impMap[filename]||(window[filename] instanceof Compment))) {
-    			impMap[filename]=filename;
-          loadScript(filename);
-    		}
-    	}
-    };
-    var loadScript=function(filename){
-      var path;
-      if (/Service$/.test(filename)) {
-        filename=filename.substring(0,filename.length-7);
-        path="service/"+filename+".js"
-      }else{
-        path="compment/"+filename+".js";
-      }
-        var script=document.createElement("script");
-        script.type="text/javascript";
-        script.src=path;
-        document.body.appendChild(script);
-        script.onload=function(){
-          completeNum++;
-          var Fn=window[filename];
-          if ((typeof Fn)=="function") {
-            window[filename].prototype=Compment.prototype;
+ var serviceList=[];
+
+ var _import=function (nameList) {
+   for (var i = nameList.length - 1; i >= 0; i--) {
+    var filename=nameList[i];
+    if (/Service$/.test(filename)) {
+     serviceList.push(filename.substring(0,filename.length-7));
+   }
+   if (!(impMap[filename]||(window[filename] instanceof Compment))) {
+     impMap[filename]=filename;
+     loadScript(filename);
+   }
+ }
+};
+var loadScript=function(filename){
+  var path;
+  if (/Service$/.test(filename)) {
+    filename=filename.substring(0,filename.length-7);
+    path="service/"+filename+".js"
+  }else{
+    path="compment/"+filename+".js";
+  }
+  var script=document.createElement("script");
+  script.type="text/javascript";
+  script.src=path;
+  document.body.appendChild(script);
+  script.onload=function(){
+    completeNum++;
+    var Fn=window[filename];
+    if ((typeof Fn)=="function") {
+      window[filename].prototype=Compment.prototype;
             //console.log(filename+" add compment prototype");
           }else{
             throw filename+ " is not a function";
@@ -180,164 +183,145 @@ var GE=function () {
             throw "Service 【"+ filename+ "】  is existed";
           }*/
         }
-    };
+      };
 
-    var startService=function(){
-      var temp={};
+      var startService=function(){
+        var temp={};
 
-      for (var i = serviceList.length - 1; i >= 0; i--) {
-        if(!temp[serviceList[i]]){
-         window[serviceList[i]]=window[serviceList[i]]();
-         temp[serviceList[i]]=1;
+        for (var i = serviceList.length - 1; i >= 0; i--) {
+          if(!temp[serviceList[i]]){
+           window[serviceList[i]]=window[serviceList[i]]();
+           temp[serviceList[i]]=1;
+         }
        }
-     }
-     temp=undefined;
-     serviceList=undefined;
-   };
+       temp=undefined;
+       serviceList=undefined;
+     };
 
-    var listen=function (completeTask) {
-    	if (Object.keys(impMap).length===completeNum) {
-    		
+     var listen=function (completeTask) {
+       if (Object.keys(impMap).length===completeNum) {
+
         startService();
-    		completeTask();
+        completeTask();
 
-    		prosessGame();
-    	}else{
-    		setTimeout(function() {listen(completeTask)}, 100);
-    	}
+        prosessGame();
+      }else{
+        setTimeout(function() {listen(completeTask)}, 100);
+      }
     };
     
     var _startGame=function(namelist,completeTask){
-          _import(namelist);
-          listen(completeTask);
+      _import(namelist);
+      listen(completeTask);
     };
     var prosessGame=function(){
-         HitManager.update();
-         doTask(awakeTask);
-         doTask(startTask);
-         startTask=[];
-         awakeTask=[];
-         Screen.clear();
-         doTask(earlyUpdateTask);
-         doTask(updateTask);
-         Time.update();
-         Screen.showFps();
-        requestAnimationFrame(prosessGame);
+     HitManager.update();
+     doTask(awakeTask);
+     doTask(startTask);
+     startTask=[];
+     awakeTask=[];
+     Screen.clear();
+     doTask(earlyUpdateTask);
+     doTask(updateTask);
+     Time.update();
+     Screen.showFps();
+     doTask(lateUpdateTask);
+     requestAnimationFrame(prosessGame);
         //setTimeout(prosessGame, 40);
-        doTask(lateUpdateTask);
+        
     };
 
-    var doTask=function(taskList){
+      var doTask=function(taskList){
         for (var i =0;i<taskList.length; i++) {
         	taskList[i]();
         }
-    };
-    
-    var _findGameObjectById=function(id){
+      };
+
+      var _findGameObjectById=function(id){
         return gameObjMap[id];
-    };
-    var _addTask=function(obj,compment){
-        
+      };
+      var addOneTask=function(obj,compment,taskMap,taskList,type){
+        if (!taskMap[obj.id]) {
+          taskMap[obj.id]={};
+        }
+        var task=compment[type]&&compment[type].bind(compment);
+        if (task) {
+          taskMap[obj.id][compment.name]=task;
+          taskList.push(task);
+        }
+      };
+      var _addTask=function(obj,compment){
+
         if (!gameObjMap[obj.id]) {
           checkName(obj);
           gameObjMap[obj.id]=obj;
         }
-        if (!updateTaskMap[obj.id]) {
-          updateTaskMap[obj.id]={};
-        }
-        if (!lateUpdateTaskMap[obj.id]) {
-          lateUpdateTaskMap[obj.id]={};
-        }
-         if (!earlyUpdateTaskMap[obj.id]) {
-          earlyUpdateTaskMap[obj.id]={};
-        }
-
-
+        addOneTask(obj,compment,earlyUpdateTaskMap,earlyUpdateTask,"earlyUpdate");
+        addOneTask(obj,compment,updateTaskMap,updateTask,"update");
+        addOneTask(obj,compment,lateUpdateTaskMap,lateUpdateTask,"lateUpdate");
+        addOneTask(obj,compment,onDestoryTaskMap,onDestoryTask,"onDestory");
         awakeTask.push(compment["awake"].bind(compment));
         startTask.push(compment["start"].bind(compment));
-
-        var upTask=compment["update"].bind(compment);
-        updateTaskMap[obj.id][compment.name]=upTask;
-        updateTask.push(upTask);
-
-        if (compment["lateUpdate"]) {
-          var lateTsk=compment["lateUpdate"].bind(compment);
-          lateUpdateTaskMap[obj.id][compment.name]=lateTsk;
-          lateUpdateTask.push(lateTsk);
-        }
-         if (compment["earlyUpdate"]) {
-          var earlyTsk=compment["earlyUpdate"].bind(compment);
-          earlyUpdateTaskMap[obj.id][compment.name]=earlyTsk;
-          earlyUpdateTask.push(earlyTsk);
-        }
         //console.log(compment["update"]);
-    };
+      };
+      var destoryOneTask=function(obj,taskMap,taskList,compName){
 
-    var _destroyGameObject=function(obj){
-
-        if (gameObjMap[obj.id]) {
-           delete gameObjMap[obj.id];
-
-           var compNames=Object.keys(updateTaskMap[obj.id]);
-           for (var i = compNames.length - 1; i >= 0; i--) {
-
-             var updateFn=updateTaskMap[obj.id][compNames[i]];
-             var index=updateTask.indexOf(updateFn);
-             if (index!==-1) {
-               updateTask.splice(index,1);
-             }
-
-             var lateUpdateFn=lateUpdateTaskMap[obj.id][compNames[i]];
-             var lateIndex=lateUpdateTask.indexOf(lateUpdateFn);
-             if (lateIndex!==-1) {
-               lateUpdateTask.splice(lateIndex,1);
-             }
-
-             var earlyUpdateFn=earlyUpdateTaskMap[obj.id][compNames[i]];
-             var earlyIndex=earlyUpdateTask.indexOf(earlyUpdateFn);
-             if (earlyIndex!==-1) {
-               earlyUpdateTask.splice(earlyIndex,1);
-             }
-           }
-           delete lateUpdateTaskMap[obj.id];
-           delete updateTaskMap[obj.id];
-           delete earlyUpdateTaskMap[obj.id];
-           HitManager.cancellBorder(obj.id);
-
-           if (obj.parent) {
-              obj.removeParent();
-           }
-
-        }
-    };
-
-    var checkName=function(obj){
-
-    	var name=obj.name;
-    	if (!name) {
-    		throw  obj+" does not have a name";
-    	}
-       if (gameObjMap[name]) {
-       	  var num=name.match(/\([\d]{1,1000}\)/g);
-       	 
-       	  if (num) {
-              num=num[num.length-1];
-       	  	  name-=num;
-              num=1+Util.parseInt(num.match(/[\d]{1,1000}/)[0],10);
-       	  }else{
-            num=1;
-          }
-              name+="("+num+")";
-              obj.name=name;
+        var task=taskMap[obj.id][compName];
+        var index=taskList.indexOf(task);
+        if (index!==-1) {
+         taskList.splice(index,1);
        }
-    };
+     };
+     var _destroyGameObject=function(obj){
 
-	return {
-		import:_import,
-		start:_startGame,
+      if (gameObjMap[obj.id]) {
+       delete gameObjMap[obj.id];
+       var compNames=Object.keys(updateTaskMap[obj.id]);
+       for (var i = compNames.length - 1; i >= 0; i--) {
+         destoryOneTask(obj,updateTaskMap,updateTask,compNames[i]);
+         destoryOneTask(obj,lateUpdateTaskMap,lateUpdateTask,compNames[i]);
+         destoryOneTask(obj,earlyUpdateTaskMap,earlyUpdateTask,compNames[i]);
+         onDestoryTaskMap[obj.id]&&onDestoryTaskMap[obj.id][compNames[i]]&&onDestoryTaskMap[obj.id][compNames[i]]();
+         destoryOneTask(obj,onDestoryTaskMap,onDestoryTask,compNames[i]);
+       }
+       delete lateUpdateTaskMap[obj.id];
+       delete updateTaskMap[obj.id];
+       delete earlyUpdateTaskMap[obj.id];
+       delete onDestoryTaskMap[obj.id];
+       if (obj.parent) {
+        obj.removeParent();
+      }
+
+    }
+  };
+
+  var checkName=function(obj){
+
+   var name=obj.name;
+   if (!name) {
+    throw  obj+" does not have a name";
+  }
+  if (gameObjMap[name]) {
+    var num=name.match(/\([\d]{1,1000}\)/g);
+
+    if (num) {
+      num=num[num.length-1];
+      name-=num;
+      num=1+Util.parseInt(num.match(/[\d]{1,1000}/)[0],10);
+    }else{
+      num=1;
+    }
+    name+="("+num+")";
+    obj.name=name;
+  }
+};
+
+return {
+  import:_import,
+  start:_startGame,
 		addTask:_addTask,//obj,compment
     findGameObjectById:_findGameObjectById,
     destroyGameObject:_destroyGameObject
-	};
+  };
 };
 GE=GE();
