@@ -2,7 +2,7 @@
 
 	简述：
 
-	GE游戏分为4个阶段：
+	GE分为4个阶段：
 
 	一.GE.start（list,FN）游戏入口，此时GE会导入list中声明的依赖
 	
@@ -18,6 +18,146 @@
 	   update：当所有compment的earlyUpdate执行完成后执行，每当浏览器渲染时执行,一般将逻辑写于该函数中
 	   lateUpdate：当所有compment的lateUpdate执行完成后执行，每当浏览器渲染时执行
 	   onDestory:当所操控的游戏物体销毁（gameObject.destorySelf）时执行
+
+	************************************
+	Compment与Service
+
+		1、service是单例的全局对象，在游戏过程中，每种sevic只有一个实例，该实例是在依赖全部加载完成后由GE自动创建，2、ervice可以在每个compment中访问；
+		3、service通常在compment中调用；
+
+		1、compment是gameobject的控制器，gameobject的所有功能都是在compemnt中编写，也需要手动使用new关键字实例化
+		2、每个gameobject都具有自己的compment组合从而具有特定的行为
+		3、gameobject不能有多个相同name的compment
+		4、通常都是在compent中调用service提供的方法
+		5、gameobject中的compemt是按添加入gameobject的顺序执行
+
+	******************************
+	最基本的对象
+
+		GE:
+
+			游戏运行的容器，在调用start方法后，GE会加载一拉，并将所有的compment中的awake,start,earlyUpdate,update,lateUpdate，onDestory六个方法加载如容器中运行
+
+			核心功能：
+
+				GE.start:加载依赖，初始化并启动游戏
+				GE.import(list):加载依赖
+
+
+		GameObject:
+
+			游戏中的对象，其本质对compemnt进行管理
+
+			方法：
+				gameObject.addCompment（compmentInstance）:将compemt实例添加入gameobject中，同时内部会将ompmemnt的											 pdate等方法加入GE容器中交给GE管理运行
+
+				gameObject.getCompment(name):通过compment的名称来获取compemnt
+
+				gameObject.destroySelf():销毁gameobject,将gameobject在GE中移除
+
+				gameObject.setParent(gameObject):为物体添加父物体,子物体会随着父物体的destory而destory。
+
+				gameObject.setChildren(gameObject):略
+
+				gameObject.removeParent(gameObject):略
+
+				gameObject.removeChild（gameObject）：略
+
+				gameObject.getChildById(gameObject.id):略
+
+				gameObject.equles(gameObject):略
+
+			属性：
+				gameObject.id；每个gameobject的唯一id，只读
+
+				gameObject.name；略 
+
+				gameObject.parent；略 只读，若需设置应使用setParent
+	********************
+	基本Compment
+
+		Transform；
+
+			最特殊的Compment,在new GmeObject时自动载入gameObject中。即每个GameObject都有一个Transform的实例
+
+			属性；
+
+				transform.gameObject:可以通过transform访问gamegObject本身，可从中获取到gameObject中当前的其他Compment
+
+				transform.position；{x:0,y:0} 世界坐标
+
+				transform.rotation：0-360 二位的旋转角度
+
+				transform.scale: {x:1,y；1} 横向与纵向缩放，-1时为镜像翻转
+
+				transform.name="Transform":compment的书写规范，与其类名一致
+
+			方法;
+
+				所有属性的set方法，此为compemt的书写规范
+		**********************		
+		Render:
+
+			依据TTransform的 position scale rotation属性渲染，将gameObject可视化
+
+			属性:
+
+			    render.size={w:100,h:100} 渲染物体的尺寸
+
+			    render.image={src:xxx/xxx.png}或Image对象 渲染的图片对象
+
+			方法:
+
+				render属性的set方法
+		*********************
+		Animation
+
+			调用通过命名组织好的序列帧，实现播放动画
+
+			属性:
+
+				animation.imageMap:动画缓存
+
+				animation.speed；值越大，播放速度越慢
+			方法：
+
+				animation.setAnimation(name,num,path):
+							添加动画，一个动画为一个文件夹，以及文件夹中一系列的序列图片构成，图片的名称除尾数外一样，尾数为1、2、3......n，一个文件夹下可以有多组动画，根据名称区分，例如../image/player1中的动画命名
+							在改方法中，name：序列帧的名称去掉尾数，
+										num:序列帧的数量
+										path；序列帧所在的文件夹的路径 例如：../image/player1
+
+				animation.play(name):
+							根据序列帧的名称播放动画
+
+				animation.setSpeed(val)；设置speed
+		**********************
+		HiteBorder
+
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -40,7 +180,10 @@
 	  		在GE中只会在两个文件夹下加载依赖：compment文件夹与service文件夹。默认情况下，GE会从compment文件夹加载，若要加载service则必须在依赖后加上Service字样。
 	  		例:若从service下加载Input,从compment文件夹加载Render，则GE.import(["InputService","Render"])
 
-  	2.
+  	2. 。。。。。。。
+
+
+
 
 
 

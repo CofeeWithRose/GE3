@@ -11,10 +11,10 @@ function GameObject() {
 GameObject.prototype.equals = function(first_argument) {
 	return this.id===this.id;
 };
-GameObject.prototype.getChildByInd=function (ind) {
+GameObject.prototype.getChildByIndex=function (ind) {
 	return this.children[Object.keys(this.children)[ind]];
 };
-GameObject.prototype.getChildByName=function(name){
+GameObject.prototype.getChildById=function(id){
 	return children[name];
 };
 GameObject.prototype.addCompment = function(compment) {
@@ -75,6 +75,9 @@ GameObject.prototype.removeChild=function(obj){
 GameObject.prototype.destroySelf = function() {
   GE.destroyGameObject(this);
 };
+GameObject.prototype.findGameObjectById=function(id){
+  return GE.findGameObjectById(id);
+}
 
 
 function Compment(){
@@ -85,18 +88,6 @@ Compment.prototype.awake = function() {
 };
 Compment.prototype.start = function() {
   //console.log("start.......");
-};
-Compment.prototype.earlyUpdate = function() {
-  //console.log("update.....");
-};
-Compment.prototype.update = function() {
-  //console.log("update.....");
-};
-Compment.prototype.lateUpdate = function() {
-  //console.log("update.....");
-};
-Compment.prototype.setName = function(val) {
-  this.name=val;
 };
 
 function Transform(){
@@ -291,6 +282,12 @@ var loadScript=function(filename){
        if (obj.parent) {
         obj.removeParent();
       }
+      var childrenKeys=Object.keys(obj.children);
+      if (childrenKeys) {
+        for (var i = childrenKeys.length - 1; i >= 0; i--) {
+         _destroyGameObject(obj.children[childrenKeys[i]]);
+        }
+      }
 
     }
   };
@@ -317,11 +314,11 @@ var loadScript=function(filename){
 };
 
 return {
+	addTask:_addTask,//obj,compment
+  findGameObjectById:_findGameObjectById,
+  destroyGameObject:_destroyGameObject,
   import:_import,
-  start:_startGame,
-		addTask:_addTask,//obj,compment
-    findGameObjectById:_findGameObjectById,
-    destroyGameObject:_destroyGameObject
-  };
+  start:_startGame
+};
 };
 GE=GE();
