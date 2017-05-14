@@ -1,1 +1,0 @@
-double click start.bat to start app

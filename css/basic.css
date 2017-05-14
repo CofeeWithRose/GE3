@@ -1,16 +1,10 @@
 body{
 	width: 100%;
-	margin: 0;
+	margin:0;
 	background: black;
 	height: 100%;
 	padding:0;
 	text-align: center;
-}
-.fps{
-	position: absolute;
-	right:10px;
-	color: white;
-/*	width: 60px;*/
 }
 canvas{
 	margin:0 auto;
@@ -24,7 +18,6 @@ html{
 	margin: 0;
 	padding: 0;
 }
-
 .noscroll,
 .noscroll body {
     overflow: hidden;
@@ -50,3 +43,9 @@ user-select:none;
 input {      
      -webkit-user-select:auto; /*webkit浏览器*/     
 }  
+.fps{
+	position: absolute;
+	right:10px;
+	color: white;
+/*	width: 60px;*/
+}

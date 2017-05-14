@@ -1,4 +1,4 @@
-function recover(argument) {
+function $$recover(argument) {
 var data=JSON.parse(localStorage._GE);
 function _getDepenList(data){
 
@@ -58,5 +58,5 @@ GE.start(_getDepenList(data),function(){
 
 };
 window.onload=function(){
-  recover();
+  $$recover();
 };

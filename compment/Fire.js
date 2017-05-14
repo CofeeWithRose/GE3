@@ -38,7 +38,7 @@ function Fire() {
 		this.isHiter=val;
 	};
 	this.setRate=function(val){
-		if (val<0||val>20) {
+		if (val==NaN||val<0||val>20) {
 			throw "rate must range 1 to 20 cant be "+val+"!"; 
 		}
 		this.rate=val;
@@ -56,7 +56,7 @@ function Fire() {
 	var createBullet=function(degree){
 		num++;
 		var b=new GameObject();
-		b.name="bullet_"+trans.gameObject.name+num;
+		b.name="bullet"+trans.gameObject.name+num;
 		var render=b.addCompment(new Render());
 		render.setSize(10,10);
 		var anim=b.addCompment(new Animation());

@@ -31,10 +31,27 @@ GameObject.prototype.addCompment = function(compment) {
     this.compmentMap[compment.name]=compment;
     compment.transform=this.compmentMap.Transform;
   }
-  var THIS=this;
-  requestAnimationFrame(function(){GE.addTask(THIS,compment);});
+  var gameObject=this;
+  requestAnimationFrame(function(){
+    GE.addTask(gameObject,compment);
+  });
 
   return compment;
+};
+GameObject.prototype.removeCompment = function(name) {
+
+  if (!this.compmentMap[name]) {
+    return;
+  }
+  if(name==="Transform"){
+    throw "Transform cont be reoved";
+  }else{
+    delete this.compmentMap[name];
+  }
+  var gameObject=this;
+  requestAnimationFrame(function(){
+    GE.removeCompment(gameObject,name);
+  });
 };
 
 GameObject.prototype.getCompment=function(name){
@@ -89,6 +106,9 @@ Compment.prototype.awake = function() {
 Compment.prototype.start = function() {
   //console.log("start.......");
 };
+Compment.prototype.setName=function (name) {
+  this.name=name;
+};
 
 function Transform(){
   /*  console.log("trans id : "+this.id);*/
@@ -115,123 +135,171 @@ Transform.prototype.getCompment=function(name){
 
 var GE=function () {
 
- var impMap={Transform:"Transform"};
- var completeNum=1;
+ var _impMap={Transform:"Transform"};
+ var _completeNum=1;
 
- var gameObjMap={};
+ var _gameObjMap={};
 
- var awakeTask=[];
- var startTask=[];
+ var _awakeTask=[];
+ var _startTask=[];
 
- var earlyUpdateTask=[];
- var earlyUpdateTaskMap={};
+ var _earlyUpdateTask=[];
+ var _earlyUpdateTaskMap={};
 
- var updateTask=[];
- var updateTaskMap={};
+ var _updateTask=[];
+ var _updateTaskMap={};
 
- var lateUpdateTask=[];
- var lateUpdateTaskMap={};
+ var _lateUpdateTask=[];
+ var _lateUpdateTaskMap={};
 
- var onDestoryTask=[];
- var onDestoryTaskMap={};
+ var _onDestoryTask=[];
+ var _onDestoryTaskMap={};
 
- var serviceList=[];
+ var _serviceList=[];
 
- var _import=function (nameList) {
-   for (var i = nameList.length - 1; i >= 0; i--) {
-    var filename=nameList[i];
-    if (/Service$/.test(filename)) {
-     serviceList.push(filename.substring(0,filename.length-7));
-   }
-   if (!(impMap[filename]||(window[filename] instanceof Compment))) {
-     impMap[filename]=filename;
-     loadScript(filename);
-   }
- }
+ var _isPlay=true;
+
+ var stop=function stop(argument) {
+  _isPlay=false;
 };
-var loadScript=function(filename){
+var continueGame=function continueGame(argument) {
+  _isPlay=true;
+  _prosessGame();
+
+};
+var refresh=function refresh(){
+ // console.log("fresh");
+ _impMap={Transform:"Transform"};
+ _completeNum=1;
+
+ _gameObjMap={};
+
+ _awakeTask=[];
+ _startTask=[];
+
+ _earlyUpdateTask=[];
+ _earlyUpdateTaskMap={};
+
+ _updateTask=[];
+ _updateTaskMap={};
+
+ _lateUpdateTask=[];
+ _lateUpdateTaskMap={};
+
+ _onDestoryTask=[];
+ _onDestoryTaskMap={};
+
+ _serviceList=[];
+
+ _isPlay=true;
+};
+
+var importJS=function (nameList) {
+ for (var i = nameList.length - 1; i >= 0; i--) {
+  var filename=nameList[i];
+  if (/Service$/.test(filename)) {
+   _serviceList.push(filename.substring(0,filename.length-7));
+ }
+ if (!(_impMap[filename]||(window[filename] instanceof Compment))) {
+   _impMap[filename]=filename;
+   _loadScript(filename);
+ }
+}
+};
+var _loadScript=function(filename){
   var path;
+  var _type;
   if (/Service$/.test(filename)) {
     filename=filename.substring(0,filename.length-7);
     path="service/"+filename+".js"
+    _type="Service";
   }else{
     path="compment/"+filename+".js";
+    _type="";
   }
   var script=document.createElement("script");
   script.type="text/javascript";
   script.src=path;
   document.body.appendChild(script);
   script.onload=function(){
-    completeNum++;
+    _completeNum++;
     var Fn=window[filename];
     if ((typeof Fn)=="function") {
       window[filename].prototype=Compment.prototype;
             //console.log(filename+" add compment prototype");
           }else{
-            throw filename+ " is not a function";
+            throw "Faile to import 【"+filename+_type+ "】 ,it  is not a function";
           }
-/*          if (window[filename]&&serviceList.indexOf(filename)!==-1) {
+/*          if (window[filename]&&_serviceList.indexOf(filename)!==-1) {
             throw "Service 【"+ filename+ "】  is existed";
           }*/
         }
       };
 
-      var startService=function(){
+      var _startService=function(){
         var temp={};
 
-        for (var i = serviceList.length - 1; i >= 0; i--) {
-          if(!temp[serviceList[i]]){
-           window[serviceList[i]]=window[serviceList[i]]();
-           temp[serviceList[i]]=1;
-         }
-       }
-       temp=undefined;
-       serviceList=undefined;
-     };
+        for (var i = _serviceList.length - 1; i >= 0; i--) {
 
-     var listen=function (completeTask) {
-       if (Object.keys(impMap).length===completeNum) {
+          if(!temp[_serviceList[i]]){
 
-        startService();
-        completeTask();
+           if("function"!=(typeof window[_serviceList[i]])){
+            throw "Fail to instant service 【"+_serviceList[i]+"】, it is not a function ";
+          }
 
-        prosessGame();
-      }else{
-        setTimeout(function() {listen(completeTask)}, 100);
+          window[_serviceList[i]]=window[_serviceList[i]]();
+          temp[_serviceList[i]]=1;
+        }
       }
-    };
-    
-    var _startGame=function(namelist,completeTask){
-      _import(namelist);
-      listen(completeTask);
-    };
-    var prosessGame=function(){
-     HitManager.update();
-     doTask(awakeTask);
-     doTask(startTask);
-     startTask=[];
-     awakeTask=[];
-     Screen.clear();
-     doTask(earlyUpdateTask);
-     doTask(updateTask);
-     Time.update();
-     Screen.showFps();
-     doTask(lateUpdateTask);
-     requestAnimationFrame(prosessGame);
-        //setTimeout(prosessGame, 40);
-        
+      temp=undefined;
+      _serviceList=undefined;
     };
 
-      var doTask=function(taskList){
+    var _listen=function (completeTask) {
+     if (Object.keys(_impMap).length===_completeNum) {
+
+      _startService();
+      completeTask();
+
+      _prosessGame();
+    }else{
+      setTimeout(function() {_listen(completeTask)}, 100);
+    }
+  };
+
+  var startGame=function(namelist,completeTask){
+    importJS(namelist);
+    _listen(completeTask);
+  };
+  var _prosessGame=function(){
+   HitManager.update();
+   _doTask(_awakeTask);
+   _doTask(_startTask);
+   _startTask=[];
+   _awakeTask=[];
+   Screen.clear();
+   _doTask(_earlyUpdateTask);
+   _doTask(_updateTask);
+   Time.update();
+   Screen.showFps();
+   _doTask(_lateUpdateTask);
+   if (_isPlay) {
+     requestAnimationFrame(_prosessGame);
+   }
+        //setTimeout(_prosessGame, 40);
+        
+      };
+
+      var _doTask=function(taskList){
         for (var i =0;i<taskList.length; i++) {
         	taskList[i]();
         }
       };
 
-      var _findGameObjectById=function(id){
-        return gameObjMap[id];
+      var findGameObjectById=function(id){
+        return _gameObjMap[id];
       };
-      var addOneTask=function(obj,compment,taskMap,taskList,type){
+      var _addOneTask=function(obj,compment,taskMap,taskList,type){
         if (!taskMap[obj.id]) {
           taskMap[obj.id]={};
         }
@@ -241,64 +309,66 @@ var loadScript=function(filename){
           taskList.push(task);
         }
       };
-      var _addTask=function(obj,compment){
+      var addTask=function(obj,compment){
 
-        if (!gameObjMap[obj.id]) {
-          checkName(obj);
-          gameObjMap[obj.id]=obj;
+        if (!_gameObjMap[obj.id]) {
+          _checkName(obj);
+          _gameObjMap[obj.id]=obj;
         }
-        addOneTask(obj,compment,earlyUpdateTaskMap,earlyUpdateTask,"earlyUpdate");
-        addOneTask(obj,compment,updateTaskMap,updateTask,"update");
-        addOneTask(obj,compment,lateUpdateTaskMap,lateUpdateTask,"lateUpdate");
-        addOneTask(obj,compment,onDestoryTaskMap,onDestoryTask,"onDestory");
-        awakeTask.push(compment["awake"].bind(compment));
-        startTask.push(compment["start"].bind(compment));
+        _addOneTask(obj,compment,_earlyUpdateTaskMap,_earlyUpdateTask,"earlyUpdate");
+        _addOneTask(obj,compment,_updateTaskMap,_updateTask,"update");
+        _addOneTask(obj,compment,_lateUpdateTaskMap,_lateUpdateTask,"lateUpdate");
+        _addOneTask(obj,compment,_onDestoryTaskMap,_onDestoryTask,"onDestory");
+        _awakeTask.push(compment["awake"].bind(compment));
+        _startTask.push(compment["start"].bind(compment));
         //console.log(compment["update"]);
       };
-      var destoryOneTask=function(obj,taskMap,taskList,compName){
-
+      var _destoryOneTask=function(obj,taskMap,taskList,compName){
         var task=taskMap[obj.id][compName];
         var index=taskList.indexOf(task);
         if (index!==-1) {
          taskList.splice(index,1);
        }
      };
-     var _destroyGameObject=function(obj){
+     var removeCompment=function(obj,compName){
+       _destoryOneTask(obj,_updateTaskMap,_updateTask,compName);
+       _destoryOneTask(obj,_lateUpdateTaskMap,_lateUpdateTask,compName);
+       _destoryOneTask(obj,_earlyUpdateTaskMap,_earlyUpdateTask,compName);
+       _onDestoryTaskMap[obj.id]&&_onDestoryTaskMap[obj.id][compName]&&_onDestoryTaskMap[obj.id][compName]();
+       _destoryOneTask(obj,_onDestoryTaskMap,_onDestoryTask,compName);
+     };
+     var destroyGameObject=function(obj){
 
-      if (gameObjMap[obj.id]) {
-       delete gameObjMap[obj.id];
-       var compNames=Object.keys(updateTaskMap[obj.id]);
+      if (_gameObjMap[obj.id]) {
+       delete _gameObjMap[obj.id];
+       var compNames=Object.keys(_updateTaskMap[obj.id]);
        for (var i = compNames.length - 1; i >= 0; i--) {
-         destoryOneTask(obj,updateTaskMap,updateTask,compNames[i]);
-         destoryOneTask(obj,lateUpdateTaskMap,lateUpdateTask,compNames[i]);
-         destoryOneTask(obj,earlyUpdateTaskMap,earlyUpdateTask,compNames[i]);
-         onDestoryTaskMap[obj.id]&&onDestoryTaskMap[obj.id][compNames[i]]&&onDestoryTaskMap[obj.id][compNames[i]]();
-         destoryOneTask(obj,onDestoryTaskMap,onDestoryTask,compNames[i]);
+        removeCompment(obj,compNames[i]);
        }
-       delete lateUpdateTaskMap[obj.id];
-       delete updateTaskMap[obj.id];
-       delete earlyUpdateTaskMap[obj.id];
-       delete onDestoryTaskMap[obj.id];
+       delete _lateUpdateTaskMap[obj.id];
+       delete _updateTaskMap[obj.id];
+       delete _earlyUpdateTaskMap[obj.id];
+       delete _onDestoryTaskMap[obj.id];
        if (obj.parent) {
         obj.removeParent();
       }
       var childrenKeys=Object.keys(obj.children);
       if (childrenKeys) {
         for (var i = childrenKeys.length - 1; i >= 0; i--) {
-         _destroyGameObject(obj.children[childrenKeys[i]]);
-        }
-      }
+         destroyGameObject(obj.children[childrenKeys[i]]);
+       }
+     }
 
-    }
-  };
+   }
+ };
 
-  var checkName=function(obj){
+ var _checkName=function(obj){
 
    var name=obj.name;
    if (!name) {
     throw  obj+" does not have a name";
   }
-  if (gameObjMap[name]) {
+  if (_gameObjMap[name]) {
     var num=name.match(/\([\d]{1,1000}\)/g);
 
     if (num) {
@@ -312,13 +382,16 @@ var loadScript=function(filename){
     obj.name=name;
   }
 };
-
 return {
-	addTask:_addTask,//obj,compment
-  findGameObjectById:_findGameObjectById,
-  destroyGameObject:_destroyGameObject,
-  import:_import,
-  start:_startGame
+	addTask:addTask,//obj,compment
+  findGameObjectById:findGameObjectById,
+  destroyGameObject:destroyGameObject,
+  removeCompment:removeCompment,
+  import:importJS,
+  start:startGame,
+  stop:stop,
+  continue:continueGame,
+  refresh:refresh
 };
 };
 GE=GE();

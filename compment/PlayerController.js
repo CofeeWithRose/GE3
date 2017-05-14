@@ -1,16 +1,15 @@
 GE.import(["InputService","ScreenService","TimeService"]);
-function PlayerController(argument) {
+function PlayerController() {
 	this.name="PlayerController";
 	this.v=3;
 	var anima;
 	var trans;
 	var size;
 	var fire;
-    var L=Screen.width/3;
-    var R=Screen.width*2/3;
-
+	var screen=Screen;
+    var L=screen.width/3;
+    var R=screen.width*2/3;
     var lastHite;
-
     var targetPosition=0;
     var v;
     var motion;
@@ -68,7 +67,7 @@ function PlayerController(argument) {
 			jump();
 		}
 
-		if (trans.position.y>Screen.height+size.h) {
+		if (trans.position.y>screen.height+size.h) {
 			trans.position.x=300;
 			trans.position.y=0;
 			motion.isOnGround=false;
@@ -87,20 +86,15 @@ function PlayerController(argument) {
 
 	var moveScreen=function(){
 
-        if ((trans.position.x<Screen.position.x+L)||(trans.position.x+size.w>Screen.position.x+R)) {
-        	targetPosition=trans.position.x-Screen.width/2;
+        if ((trans.position.x<screen.position.x+L)||(trans.position.x+size.w>screen.position.x+R)) {
+        	targetPosition=trans.position.x-screen.width/2;
         }
 
-        if (Screen.position.x<=0) {
-        	Screen.position.x=0;
+        if (screen.position.x<=0) {
+        	screen.position.x=0;
         }
-        var sV=Util.parseInt((targetPosition-Screen.position.x)/50);
-/*        sV=Math.abs(sV)<Math.abs(v.x)? sV:v.x;*/
-
-        Screen.position.x+=sV;
-
-
-
+        var sV=Util.parseInt((targetPosition-screen.position.x)/50);
+        screen.position.x+=sV;
 	};
 
 	this.setV=function(val){

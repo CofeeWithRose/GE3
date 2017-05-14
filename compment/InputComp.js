@@ -35,10 +35,12 @@ function InputComp() {
 
       window.addEventListener("keydown",function(e){
 
+
         if (!Input[e.key]) {
           Input.down[e.key]=true;
         };
         Input[e.key]=true;
+        //console.log("keydown..."+Input.j);
       });
       window.addEventListener("keyup",function(e){
         Input[e.key]=false;

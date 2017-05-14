@@ -7,8 +7,8 @@ function StageComp() {
 	};
 	this.update=function(){
 		if (Input.getKeyUp("i")) {
-			localStorage._GE = Util.stringify(trans.gameObject);
-			//document.write(localStorage._GE);
+			localStorage.setItem("GE",Util.stringify(trans.gameObject));
+			//document.write(localStorage.GE);
 			alert("save successfuly!");
 		}
 		if (Input.r||Input.R) {

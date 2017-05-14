@@ -39,7 +39,7 @@ function HitBorder() {
     if (this.isShow) {
 
       var  rObj=new GameObject();
-       rObj.name="border_"+trans.gameObject.name;
+       rObj.name="border"+trans.gameObject.name;
        rTrans=rObj.getCompment('Transform');
        var rRender=rObj.addCompment(new Render());
        rRender.setImage({src:"image/border/border.png"});

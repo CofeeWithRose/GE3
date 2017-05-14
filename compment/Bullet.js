@@ -5,6 +5,7 @@ function Bullet() {
     var v={x:this.V,y:0};
     var count=0;
     var isHit;
+    var math=Math;
 
     this.V=5;
     this.degree=0;
@@ -15,9 +16,9 @@ function Bullet() {
 		trans=this.transform;
 		
 		anim=trans.getCompment("Animation");
-		var d=this.degree*Math.PI/180;
-        v.x=(Math.cos(d)*this.V);
-        v.y=(Math.sin(d)*this.V);
+		var d=this.degree*math.PI/180;
+        v.x=(math.cos(d)*this.V);
+        v.y=(math.sin(d)*this.V);
         trans.position.x=this.initPosition.x+v.x;
         trans.position.y=this.initPosition.y+v.y;
 

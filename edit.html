@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Edit</title>
+	<link rel="stylesheet" type="text/css" href="css/basic.css">
+	<link rel="stylesheet" type="text/css" href="css/edit.css">
+</head>
+<body>
+	<div class="top h-5">
+	</div>
+	<div class="v-bar"></div>
+	<div class="middle h-80">
+		<div class="left w-20 h-100">
+			<div for-each="gameObject in Stage.children">
+				<p bind-value="gameObject.name" onclick="EDT.showObject(this)"></p>
+			</div>
+		</div>
+		<div class="h-bar"></div>
+		<div class="center w-60 h-100"></div>
+		<div class="h-bar"></div>
+		<div class="right w-20 h-100"></div>
+	</div>
+	<div class="v-bar"></div>
+	<div class="bottom h-15"></div>
+</body>
+<script type="text/javascript" src="basic/basic.js"></script>
+<script type="text/javascript" src="basic/recover.js"></script>
+<script type="text/javascript" src="basic/edit.js"></script>
+</html>

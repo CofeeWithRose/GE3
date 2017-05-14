@@ -9,6 +9,7 @@ function UIBtn() {
   	var T;
   	var B;
   	var anim;
+
 	this.start=function(){
 		trans=this.transform;
 		var position=trans.getCompment("UImove").position;
@@ -27,7 +28,7 @@ function UIBtn() {
 			if (t.clientX>L&&t.clientX<R&&t.clientY>T&&t.clientY<B) {
 
 				if (!Input[this.key]) {
-					console.log("down 1")
+					//console.log("down 1")
 					Input.down[this.key]=true;
 				}
 				Input[this.key]=true;

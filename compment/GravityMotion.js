@@ -9,7 +9,7 @@ function GravityMotion() {
 
 	this.isOnGround=false;
 	var lastHite;
-
+	var trans;
 	var grondHiter;
 	var size;
 	var groundExp=/ground-/;

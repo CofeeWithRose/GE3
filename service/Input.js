@@ -17,5 +17,4 @@ function Input(){
    return Input.up[key];
   };
  return fn;
-
 }
