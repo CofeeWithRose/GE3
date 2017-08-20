@@ -43,7 +43,7 @@ var layoutUI=function(){
 			}
 		}
 	};
-	var _onMoveVBar=function(e){
+	var _onMoveVBar=function _onMoveVBar(e){
 		
 		var minDrt=_curElem.elem.parentElement.clientHeight*0.05;
 		var _lastWNum=parseInt(_curLastElem.className.match(/h-\d+/)[0].split("-")[1]);
@@ -68,7 +68,7 @@ var layoutUI=function(){
 			}
 		}
 	};
-	var _changeClassW=function(elem,newClass){
+	var _changeClassW=function _changeClassW(elem,newClass){
 		elem.className=elem.className.replace(/w-\d+/,newClass);
 	};
 	var _changeClassH=function(elem,newClass){
