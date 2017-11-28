@@ -133,7 +133,8 @@ Transform.prototype.getCompment=function(name){
   return this.compmentMap[name];
 };
 
-var GE=function () {
+var GE=function () 
+{
 
  var _impMap={Transform:"Transform"};
  var _completeNum=1;
@@ -230,9 +231,6 @@ var _loadScript=function(filename){
           }else{
             throw "Faile to import 【"+filename+_type+ "】 ,it  is not a function";
           }
-/*          if (window[filename]&&_serviceList.indexOf(filename)!==-1) {
-            throw "Service 【"+ filename+ "】  is existed";
-          }*/
         }
       };
 

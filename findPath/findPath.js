@@ -1,3 +1,8 @@
+/**
+ * 二维坐标。
+ * @param { x 轴坐标} x 
+ * @param { y 轴坐标} y 
+ */
 var Vectort2=function Vectort2(x,y) {
 	this.x=x;
 	this.y=y;
@@ -8,14 +13,30 @@ Vectort2.prototype.getName = function() {
 Vectort2.prototype.equalse = function(other) {
 	return other&&other.x===this.x&&other.y===this.y;
 };
+
+
+/**
+ * 三维坐标.
+ * @param {x轴坐标} x 
+ * @param { y轴坐标} y 
+ * @param { z轴坐标} z 
+ */
 var Vectort3 =function Vectort3(x,y,z) {
-	Vectort2.apply(this,arguments);
+	this.x=x;
+	this.y=y;
 	this.z=z;
 };
 Vectort3.prototype.getName = function() {
 	return "x"+this.x+"y"+this.y+"z"+this.z;
 };
-var TrangleClass=function TrangleClass(pointA,pointB,pointC) {
+
+/**
+ * 三角形.
+ * @param {点A} pointA 
+ * @param {点B} pointB 
+ * @param {点C} pointC 
+ */
+var Trangle=function Trangle(pointA,pointB,pointC) {
 	this.pointA=pointA;
 	this.pointB=pointB;
 	this.pointC=pointC;
@@ -26,7 +47,15 @@ var TrangleClass=function TrangleClass(pointA,pointB,pointC) {
 	this.bcb=pointC.y - this.kcb*pointC.y;
 	this.bab=pointA.y - this.kab*pointA.y;
 };
-var SegmentClass=function SegmentClass(nodeA,nodeB,dist) {
+
+
+/**
+ * 线段.
+ * @param {a点} nodeA 
+ * @param {b点} nodeB 
+ * @param {a点与b点距离} dist 
+ */
+var Segment=function Segment(nodeA,nodeB,dist) {
 
 	if (nodeB instanceof Vectort2&& nodeA instanceof Vectort2) {
 		this.nodeAName=nodeA.getName();
@@ -51,7 +80,7 @@ var SegmentClass=function SegmentClass(nodeA,nodeB,dist) {
 		this.dist=dist;
 	}
 };
-var SegmentTreeClass=function SegmentClass(nodeName) {
+var SegmentTree=function SegmentTree(nodeName) {
 	this.nodeName=nodeName;
 	this.children=[];
 	this.parent;
@@ -59,7 +88,7 @@ var SegmentTreeClass=function SegmentClass(nodeName) {
 	this.minDistMap={};
 	this.minDistMap[nodeName]=0;
 };
-SegmentTreeClass.prototype.add = function(segmentTree,mapData) {
+SegmentTree.prototype.add = function(segmentTree,mapData) {
 	segmentTree.parent=this;
 	segmentTree.minDistMap=this.minDistMap;
 	segmentTree.toRootDist=this.toRootDist+mapData.get(this.nodeName,segmentTree.nodeName).dist;
@@ -73,7 +102,7 @@ SegmentTreeClass.prototype.add = function(segmentTree,mapData) {
 		return true;
 	}
 };
-SegmentTreeClass.prototype._getName = function(name,tree) {
+SegmentTree.prototype._getName = function(name,tree) {
 	name=tree.nodeName+"|"+name;
 	if (tree.parent) {
 		return this._getName(name,tree.parent);
@@ -81,24 +110,29 @@ SegmentTreeClass.prototype._getName = function(name,tree) {
 		return name;
 	}
 };
-SegmentTreeClass.prototype.getName = function() {
+SegmentTree.prototype.getName = function() {
 	var name="";
 	name=this._getName(name,this);
 	return name;
 };
-SegmentTreeClass.prototype._getPath=function getPath(tree,segmentArray,map) {
+SegmentTree.prototype._getPath=function getPath(tree,segmentArray,map) {
 	if (tree.parent) {
 		segmentArray.push(map.get(tree.nodeName,tree.parent.nodeName));
 		this._getPath(tree.parent,segmentArray,map);
 	}
 	
 };
-SegmentTreeClass.prototype.getPath = function(mapData) {
+SegmentTree.prototype.getPath = function(mapData) {
 	var array=[];
 	this._getPath(this,array,mapData);
 	return array;
 };
-var MapDataClass=function MapDataClass(array) {
+
+/**
+ * 地图信息.
+ * @param {option 点构成的数组，数组中的点将两两相连，构成地图路径.} array 
+ */
+var MapData=function MapData(array) {
 	this.segmets=[];
 	this.segmetsMap={};
 	this.nodeNameList=[];
@@ -108,11 +142,11 @@ var MapDataClass=function MapDataClass(array) {
 		for (var i = array.length - 1; i >= 1; i--) {
 			
 			for (var j = i- 1; j >= 0; j--) {
-				this.add(new SegmentClass(array[i],array[j],1+Number.parseInt(10*Math.random())));
+				this.add(new Segment(array[i],array[j],1+Number.parseInt(10*Math.random())));
 			}
 		}
 	};
-	if (array instanceof MapDataClass) {
+	if (array instanceof MapData) {
 		for (var i = array.segmets.length - 1; i >= 0; i--) {
 		   this.segmets.push(array.segmets[i]);
 		}
@@ -128,7 +162,7 @@ var MapDataClass=function MapDataClass(array) {
 	}
 
 };
-MapDataClass.prototype._processTrangle = function(segmet) {
+MapData.prototype._processTrangle = function(segmet) {
 	if (segmet.pointA&&segmet.pointB) {
 
 		this._addTrangle(segmet);
@@ -142,19 +176,28 @@ MapDataClass.prototype._processTrangle = function(segmet) {
 	}
 
 };
-MapDataClass.prototype._addTrangle = function(segmet) {
+MapData.prototype._addTrangle = function(segmet) {
 	for (var i = this.nodeNameList.length - 1; i >= 0; i--) {
 		var nodeName=this.nodeNameList[i].getName();
 		var keyA=nodeName+this.SPLIT_SYMBOL+segmet.nodeAName;
 		var keyB = nodeName+this.SPLIT_SYMBOL+segmet.nodeBName;
 		if (this.segmetsMap[keyB]&&this.segmetsMap[keyA]) {
 
-			var trangle=new TrangleClass(segmet.pointA,segmet.pointB,this.nodeNameList[i]);
+			var trangle=new Trangle(segmet.pointA,segmet.pointB,this.nodeNameList[i]);
 			this.trangleList.push(trangle);
 		}
 	}
 };
-TrangleClass.prototype.isPointIn=function isPointIn(point){
+Trangle.prototype.isPointIn=function isPointIn(point){
+	var xArray=[this.pointA.x,this.pointB.x,this.pointC.x];
+	xArray=xArray.sort();
+	if (point.x<xArray[0]||point.x>xArray[2]) {
+		return false;
+	}
+
+	if (point.equalse(this.pointA)||point.equalse(this.pointB)||point.equalse(this.pointC)) {
+		return true;
+	}
 	var yValues=[];
 	yValues.push(this.kab*point.x+this.bab);
 
@@ -167,37 +210,32 @@ TrangleClass.prototype.isPointIn=function isPointIn(point){
 	  	times++;
 	  }	
 	}
-	if (point.equalse(this.pointA)||point.equalse(this.pointB)||point.equalse(this.pointC)) {
-		times=1;
-	}
+	
 	return times%2==1;
 };
-MapDataClass.prototype._getTemExtMap = function(pointA,pointB) {
-	var map=new MapDataClass(this);
+MapData.prototype._getTemExtMap = function(pointA,pointB) {
+	var map=new MapData(this);
 	var isAIn=0;
 	var isBIn=0;
-	console.log("map.trangleList.length : "+map.trangleList.length);
 	for (var i = map.trangleList.length - 1; i >= 0; i--) {
 		var trangle=map.trangleList[i];
-		
 		if (trangle.isPointIn(pointA)) {
-			map.add(new SegmentClass(pointA,trangle.pointA));
-			map.add(new SegmentClass(pointA,trangle.pointB));
-			map.add(new SegmentClass(pointA,trangle.pointC));
+			map.add(new Segment(pointA,trangle.pointA));
+			map.add(new Segment(pointA,trangle.pointB));
+			map.add(new Segment(pointA,trangle.pointC));
 			isAIn++;
 		}
 	};
-	console.log("map.trangleList.length : "+map.trangleList.length);
 	for (var i = map.trangleList.length - 1; i >= 0; i--) {
-
+		var trangle=map.trangleList[i];
 		if (trangle.isPointIn(pointB)) {
-			map.add(new SegmentClass(pointB,trangle.pointA));
-			map.add(new SegmentClass(pointB,trangle.pointB));
-			map.add(new SegmentClass(pointB,trangle.pointC));
+
+			map.add(new Segment(pointB,trangle.pointA));
+			map.add(new Segment(pointB,trangle.pointB));
+			map.add(new Segment(pointB,trangle.pointC));
 			isBIn++;
 		}
 	};
-	console.log("map.trangleList.length : "+map.trangleList.length);
 	if (!isAIn) {
 		throw "pointA is not in area .";
 	}
@@ -206,15 +244,18 @@ MapDataClass.prototype._getTemExtMap = function(pointA,pointB) {
 	}
 	return map;
 };
-MapDataClass.prototype.anyPointMinPath = function(pointA,pointB) {
+MapData.prototype.anyPointMinPath = function(pointA,pointB) {
 
 	return this._getTemExtMap(pointA,pointB).findMinPath(pointA,pointB);
 };
-MapDataClass.prototype.anPointAllPath = function(pointA,pointB) {
+MapData.prototype.anPointAllPath = function(pointA,pointB) {
 	return this._getTemExtMap(pointA,pointB).findAllPath(pointA,pointB);
 };
-MapDataClass.prototype.add = function(segmet) {
-	if (segmet instanceof SegmentClass ) {
+MapData.prototype.add = function(segmet) {
+	if (segmet instanceof Segment ) {
+		if (this.get(segmet.nodeAName,segmet.nodeBName)) {
+			return;
+		}
 		this._processTrangle(segmet);
 		this.segmets.push(segmet);
 		var k=segmet.nodeAName+this.SPLIT_SYMBOL+segmet.nodeBName;
@@ -225,7 +266,7 @@ MapDataClass.prototype.add = function(segmet) {
 		throw "illegal type .";
 	}
 };
-MapDataClass.prototype.get = function(nodeA,nodeB) {
+MapData.prototype.get = function(nodeA,nodeB) {
 	if ("object"===(typeof nodeA)&&
 		"object"===(typeof nodeB)) {
 		nodeA=nodeA.getName();
@@ -233,19 +274,19 @@ MapDataClass.prototype.get = function(nodeA,nodeB) {
 	};
 	return this.segmetsMap[nodeA+this.SPLIT_SYMBOL+nodeB];
 };
-MapDataClass.prototype._getRelatedTrees = function(parentTree) {
+MapData.prototype._getRelatedTrees = function(parentTree) {
 	var relatedTreeList = [];
 	for (var i = this.segmets.length - 1; i >= 0; i--) {
 		var segmet=this.segmets[i];
 		if (segmet.nodeAName===parentTree.nodeName) {
-			relatedTreeList.push(new SegmentTreeClass(segmet.nodeBName));
+			relatedTreeList.push(new SegmentTree(segmet.nodeBName));
 		}else if(segmet.nodeBName===parentTree.nodeName){
-			relatedTreeList.push(new SegmentTreeClass(segmet.nodeAName));	
+			relatedTreeList.push(new SegmentTree(segmet.nodeAName));	
 		}
 	}
 	return relatedTreeList;
 };
-MapDataClass.prototype._appendTree= function(parentTree,endTrees,nodeB) {
+MapData.prototype._appendTree= function(parentTree,endTrees,nodeB) {
 	if ("object"===nodeB) {
 		nodeB=nodeB.getName();
 	}
@@ -266,19 +307,19 @@ MapDataClass.prototype._appendTree= function(parentTree,endTrees,nodeB) {
 		}
 	}
 };
-MapDataClass.prototype.findAllPath = function(nodeA,nodeB) {
+MapData.prototype.findAllPath = function(nodeA,nodeB) {
 	if ("object"===(typeof nodeA)&&
 		"object"===(typeof nodeB)) {
 		nodeA=nodeA.getName();
 		nodeB=nodeB.getName();
 	};
-	var rootTree=new SegmentTreeClass(nodeA);
+	var rootTree=new SegmentTree(nodeA);
 	var endTrees=[];
 	this._appendTree(rootTree,endTrees,nodeB);
 	return endTrees;
 
 };
-MapDataClass.prototype.findMinPath = function(nodeA,nodeB) {
+MapData.prototype.findMinPath = function(nodeA,nodeB) {
 	if ("object"===(typeof nodeA)&&
 		"object"===(typeof nodeB)) {
 		nodeA=nodeA.getName();
@@ -301,33 +342,47 @@ MapDataClass.prototype.findMinPath = function(nodeA,nodeB) {
 		 throw "no path find .";
 	}
 };
-MapDataClass.prototype.findPathArray = function(nodeA,nodeB) {
+MapData.prototype.findPathArray = function(nodeA,nodeB) {
 	return this.findMinPath(nodeA,nodeB).getPath(this);
 };
 
 /////////////////////
 //["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-var map=new MapDataClass();
+var map=new MapData();
 
-var pointA=new Vectort2(0,0);
-var pointB=new Vectort2(0,1);
-var pointC=new Vectort2(1,1);
-var pointD=new Vectort2(1,0);
-var pointE=new Vectort2(2,2);
+var pointA=new Vectort2(1,0);
+var pointB=new Vectort2(2,0);
+var pointC=new Vectort2(1,2);
+var pointD=new Vectort2(2,2);
+var pointE=new Vectort2(0,2);
+var pointF=new Vectort2(0,3);
+var pointG=new Vectort2(3,3);
+var pointH=new Vectort2(3,2);
 
-map.add(new SegmentClass(pointA,pointB));
-map.add(new SegmentClass(pointA,pointC));
-map.add(new SegmentClass(pointA,pointD));
+map.add(new Segment(pointA,pointB));
+map.add(new Segment(pointA,pointC));
+map.add(new Segment(pointA,pointD));
 
-map.add(new SegmentClass(pointC,pointB));
-map.add(new SegmentClass(pointD,pointB));
+map.add(new Segment(pointC,pointB));
+map.add(new Segment(pointD,pointB));
+map.add(new Segment(pointA,pointB));
 
-map.add(new SegmentClass(pointE,pointB));
-map.add(new SegmentClass(pointE,pointC));
-map.add(new SegmentClass(pointE,pointD));
+map.add(new Segment(pointC,pointD));
+map.add(new Segment(pointC,pointE));
+map.add(new Segment(pointC,pointF));
+map.add(new Segment(pointC,pointG));
 
-map.add(new SegmentClass(pointE,pointA));
-map.add(new SegmentClass(pointB,pointD));
+map.add(new Segment(pointD,pointF));
+map.add(new Segment(pointD,pointG));
+map.add(new Segment(pointD,pointH));
+
+map.add(new Segment(pointE,pointF));
+map.add(new Segment(pointE,pointG));
+
+map.add(new Segment(pointF,pointG));
+
+map.add(new Segment(pointH,pointG));
+
 
 // for (var i = 100; i >= 0; i--) {
 // 	console.time("asdad");
@@ -335,6 +390,6 @@ map.add(new SegmentClass(pointB,pointD));
 // console.timeEnd("asdad");
 // }
 console.time("asdad");
-var tree=map.anyPointMinPath(new Vectort2(0.5,0.5),new Vectort2(0.6,0.6));
+var tree=map.anyPointMinPath(new Vectort2(1,0.1),pointG);
 console.log(tree.getName()+ "  minDist : "+tree.toRootDist);
 console.timeEnd("asdad");
