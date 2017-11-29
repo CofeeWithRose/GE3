@@ -1,10 +1,120 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<script type="text/javascript" src="findPath2.js" charset="utf-8"></script>
+	<style>
+		html,
+		body {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+	<script type="text/javascript" src="findPath2.js" charset="utf-8"></script>
 	<title>findPath</title>
 </head>
-<body>
 
+<body>
+	<canvas id="canvas"></canvas>
 </body>
+<script>
+	var canvas = document.getElementById("canvas");
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	var context = canvas.getContext("2d");
+
+
+	//点与点。
+	/**
+	 * 1.找与点相通的点,累加与根目录的距离.
+	 * 2.判断点是否到过且最短.
+	 * 3.找下一个点.
+	 */
+
+	//构造地图.A-H点，两两相连.
+	var map = new PD.MapData();
+
+	var pointA = new PD.Vectort2(1, 0);
+	var pointB = new PD.Vectort2(2, 0);
+	var pointC = new PD.Vectort2(1, 2);
+	var pointD = new PD.Vectort2(2, 2);
+	var pointE = new PD.Vectort2(0, 2);
+	var pointF = new PD.Vectort2(0, 3);
+	var pointG = new PD.Vectort2(3, 3);
+	var pointH = new PD.Vectort2(3, 2);
+	var list = [pointA, pointB, pointC, pointD, pointE, pointF, pointG, pointH];
+
+	for (var i = 0; i < list.length - 1; i++) {
+		for (var j = i + 1; j < list.length; j++) {
+			map.add(new PD.Segment(list[i], list[j]));
+			map.add(new PD.Segment(list[j], list[i]));
+		}
+	}
+
+
+
+
+	//绘图.
+
+	function marPoint(node) {
+		var n = fixPosition(node);
+		context.arc(n.x, n.y, 10, 0, 2 * Math.PI, true);
+		context.fillStyle = "gray";
+		context.fill();
+		
+		context.fillStyle = "blue";
+		context.font = "20px Georgia";
+		context.fillText(node.id, n.x - 20, n.y - 20);
+		context.stroke();
+		context.closePath();
+	}
+	function fixPosition(node) {
+		return { x: 100 + node.x * 100, y: 100 + 100 * node.y };
+	}
+
+
+	function linePoint(pointA, pointB, linecloor, width) {
+
+		context.strokeStyle = linecloor;
+		// context.fillStyle = linecloor;
+		// context.save();
+		context.lineWidth = width || 1;
+		var a = fixPosition(pointA);
+		var b = fixPosition(pointB);
+		context.moveTo(a.x, a.y);
+		context.lineTo(b.x, b.y);
+		// context.stroke();
+		context.closePath();
+		// context.restore();
+		console.log(a)
+	}
+	// console.log(map.segmentMap);
+	// for (var key in map.segmentMap) {
+	// 	var s = map.segmentMap[key];
+	// 	// context.strokeStyle = "gray";
+	// 	linePoint(s.nodeA, s.nodeB, 'gray');
+
+
+	// }
+	for (var i = 0; i < list.length; i++) {
+		marPoint(list[i]);
+	}
+
+	console.time("123");
+	// var root = new RootNodeTree(pointA, pointD, map);
+	// root.appendTree();
+	//获取路径.
+	var nodes = PD.findPath(pointH, pointA, map);
+	console.timeEnd("123");
+	// document.write(JSON.stringify(nodes));
+	console.log(nodes);
+	for (var i = 0; i < nodes.length - 1; i++) {
+		// context.strokeStyle = "red";
+		linePoint(nodes[i], nodes[i + 1], "red",5);
+		console.log("red......." + nodes);
+	}
+	// linePoint(nodes[0], nodes[1], "red", 12);
+</script>
+
 </html>
