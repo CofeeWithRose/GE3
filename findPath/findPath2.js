@@ -194,7 +194,7 @@
             this.nodeToRelatedMap[segment.nodeA] = list;
         }
         this.segmentMap[segment.nodeA.id + this.SPLIT_SYMBOL + segment.nodeB.id] = segment;
-        this.segmentMap[segment.nodeB.id + this.SPLIT_SYMBOL + segment.nodeA.id] = segment;
+        // this.segmentMap[segment.nodeB.id + this.SPLIT_SYMBOL + segment.nodeA.id] = segment;
     }
 
 

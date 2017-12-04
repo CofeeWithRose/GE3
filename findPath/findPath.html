@@ -32,7 +32,7 @@
 	 * 3.找下一个点.
 	 */
 
-	//构造地图.A-H点，两两相连.
+	//构造地图.A-H点，两两相连，默认为静态点.
 	var map = new PD.MapData();
 
 	var pointA = new PD.Vectort2(1, 0);
@@ -46,26 +46,33 @@
 	var list = [pointA, pointB, pointC, pointD, pointE, pointF, pointG, pointH];
 
 	for (var i = 0; i < list.length - 1; i++) {
-		for (var j = i + 1; j < list.length; j++) {
+		for (var j = i + 1; j < list.length - 1; j++) {
+			//双向互通
 			map.add(new PD.Segment(list[i], list[j]));
 			map.add(new PD.Segment(list[j], list[i]));
 		}
 	}
+	map.add(new PD.Segment(list[5], list[7]));
+	map.add(new PD.Segment(list[7], list[1]));
+	map.add(new PD.Segment(list[6], list[7]));
 
-
-
-
+	console.time("getMinpath: ");
+	//获取路径最短.
+	var nodes = PD.findPath(pointH, pointA, map);
+	console.timeEnd("get min path: ");
+	
 	//绘图.
-
-	function marPoint(node) {
+	function marPoint(node, R,color) {
+		context.beginPath();
 		var n = fixPosition(node);
-		context.arc(n.x, n.y, 10, 0, 2 * Math.PI, true);
-		context.fillStyle = "gray";
+		context.arc(n.x, n.y, R, 0, 2 * Math.PI, true);
+		context.fillStyle = color||"gray";
 		context.fill();
-		
-		context.fillStyle = "blue";
-		context.font = "20px Georgia";
-		context.fillText(node.id, n.x - 20, n.y - 20);
+		if (!isNaN(node.id)) {
+			context.fillStyle = "blue";
+			context.font = "20px Georgia";
+			context.fillText(node.id, n.x - 20, n.y - 20);
+		}
 		context.stroke();
 		context.closePath();
 	}
@@ -74,47 +81,39 @@
 	}
 
 
-	function linePoint(pointA, pointB, linecloor, width) {
-
-		context.strokeStyle = linecloor;
-		// context.fillStyle = linecloor;
-		// context.save();
+	function linePoint(nodeA, nodeB, linecloor, width) {
+		context.beginPath();
+		context.strokeStyle = linecloor || "black";
 		context.lineWidth = width || 1;
-		var a = fixPosition(pointA);
-		var b = fixPosition(pointB);
+		var a = fixPosition(nodeA);
+		var b = fixPosition(nodeB);
 		context.moveTo(a.x, a.y);
 		context.lineTo(b.x, b.y);
-		// context.stroke();
+		context.stroke();
 		context.closePath();
-		// context.restore();
-		console.log(a)
+
+		var v = { x: nodeB.x - nodeA.x, y: nodeB.y - nodeA.y };
+		var vl = Math.sqrt(v.y * v.y + v.x * v.x);
+		var st = { x: nodeA.x + v.x * 0.5, y: nodeA.y + v.y * 0.5 };
+		marPoint(st, 3);
+		marPoint({ x: st.x + 0.05 / vl * v.x, y: st.y + 0.05 / vl * v.y }, 1);
 	}
-	// console.log(map.segmentMap);
-	// for (var key in map.segmentMap) {
-	// 	var s = map.segmentMap[key];
-	// 	// context.strokeStyle = "gray";
-	// 	linePoint(s.nodeA, s.nodeB, 'gray');
 
-
-	// }
+	for (var key in map.segmentMap) {
+		var s = map.segmentMap[key];
+		linePoint(s.nodeA, s.nodeB, 'gray');
+		
+	}
+	context.save();
 	for (var i = 0; i < list.length; i++) {
-		marPoint(list[i]);
+		marPoint(list[i], 10);
 	}
 
-	console.time("123");
-	// var root = new RootNodeTree(pointA, pointD, map);
-	// root.appendTree();
-	//获取路径.
-	var nodes = PD.findPath(pointH, pointA, map);
-	console.timeEnd("123");
-	// document.write(JSON.stringify(nodes));
-	console.log(nodes);
+
+	//绘制最短路径.
 	for (var i = 0; i < nodes.length - 1; i++) {
-		// context.strokeStyle = "red";
-		linePoint(nodes[i], nodes[i + 1], "red",5);
-		console.log("red......." + nodes);
+		linePoint(nodes[i], nodes[i + 1], "red", 2);
 	}
-	// linePoint(nodes[0], nodes[1], "red", 12);
 </script>
 
 </html>
