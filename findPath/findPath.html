@@ -10,39 +10,57 @@
 			width: 100%;
 			height: 100%;
 		}
+		.input{
+			width: 100px;
+			height: 15px;
+			margin: auto;
+		}
+		canvas{
+			border: gray solid 1px;
+			border-radius: 10PX;
+		}
 	</style>
 	<script type="text/javascript" src="findPath2.js" charset="utf-8"></script>
 	<title>findPath</title>
 </head>
 
-<body>
-	<canvas id="canvas"></canvas>
+<body onmouseup="endDrag()">
+	<div style="display:flex;">
+		<!-- <div style="width: 80%;display:flex;margin: auto;"></div> -->
+		<canvas id="canvas" style="margin: auto;" onmousemove="drag(event)" onmousedown="startDrag(event)"></canvas>
+		<div class="input">
+			startPoint <input type="input" name="" value="0" onkeyup="drawCanvas()" />
+			endPoint <input type="input" name="" value="7" onkeyup="drawCanvas()" />
+		</div>	
+	</div>
+	
+	
+</body>
+</body>
 </body>
 <script>
+	var inputs = document.querySelectorAll("input");
+	var stInput = inputs[0];
+	var endInput = inputs[1];
+	var lastSt;
+	var lastEnd;
 	var canvas = document.getElementById("canvas");
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	canvas.width = 600;
+	canvas.height = 600;
 	var context = canvas.getContext("2d");
-
-
-	//点与点。
-	/**
-	 * 1.找与点相通的点,累加与根目录的距离.
-	 * 2.判断点是否到过且最短.
-	 * 3.找下一个点.
-	 */
+	
 
 	//构造地图.A-H点，两两相连，默认为静态点.
 	var map = new PD.MapData();
 
-	var pointA = new PD.Vectort2(1, 0);
-	var pointB = new PD.Vectort2(2, 0);
-	var pointC = new PD.Vectort2(1, 2);
-	var pointD = new PD.Vectort2(2, 2);
-	var pointE = new PD.Vectort2(0, 2);
-	var pointF = new PD.Vectort2(0, 3);
-	var pointG = new PD.Vectort2(3, 3);
-	var pointH = new PD.Vectort2(3, 2);
+	var pointA = new PD.Vectort2(1, 0, true);
+	var pointB = new PD.Vectort2(2, 0,true);
+	var pointC = new PD.Vectort2(1, 2,true);
+	var pointD = new PD.Vectort2(2, 2,true);
+	var pointE = new PD.Vectort2(0, 2,true);
+	var pointF = new PD.Vectort2(0, 3,true);
+	var pointG = new PD.Vectort2(3, 3,true);
+	var pointH = new PD.Vectort2(3, 2,true);
 	var list = [pointA, pointB, pointC, pointD, pointE, pointF, pointG, pointH];
 
 	for (var i = 0; i < list.length - 1; i++) {
@@ -56,10 +74,7 @@
 	map.add(new PD.Segment(list[7], list[1]));
 	map.add(new PD.Segment(list[6], list[7]));
 
-	console.time("getMinpath: ");
-	//获取路径最短.
-	var nodes = PD.findPath(pointH, pointA, map);
-	console.timeEnd("get min path: ");
+	
 	
 	//绘图.
 	function marPoint(node, R,color) {
@@ -75,11 +90,13 @@
 		}
 		context.stroke();
 		context.closePath();
-	}
+	};
 	function fixPosition(node) {
-		return { x: 100 + node.x * 100, y: 100 + 100 * node.y };
+		return { x: 150 + node.x * 100, y: 100 + 100 * node.y };
+	};
+	function reFixPosition(point){
+		 return { x: -150 + node.x * 0.01, y: -100 + 0.01 * node.y };
 	}
-
 
 	function linePoint(nodeA, nodeB, linecloor, width) {
 		context.beginPath();
@@ -97,23 +114,64 @@
 		var st = { x: nodeA.x + v.x * 0.5, y: nodeA.y + v.y * 0.5 };
 		marPoint(st, 3);
 		marPoint({ x: st.x + 0.05 / vl * v.x, y: st.y + 0.05 / vl * v.y }, 1);
-	}
+	};
 
-	for (var key in map.segmentMap) {
-		var s = map.segmentMap[key];
-		linePoint(s.nodeA, s.nodeB, 'gray');
+	function drawCanvas(){
+		var st = stInput.value||lastSt;
+		var end = endInput.value||lastEnd;
+        context.clearRect(0,0,600,600);
+		console.time("getMinpath: ");
+		//获取路径最短.
+		var nodes = PD.findPath(list[st],list[end], map);
+		console.timeEnd("get min path: ");
+
+		for (var key in map.segmentMap) {
+			var s = map.segmentMap[key];
+			linePoint(s.nodeA, s.nodeB, 'gray');
+			
+		}
+		// context.save();
+		for (var i = 0; i < list.length; i++) {
+			marPoint(list[i], 10);
+		}
+		//绘制最短路径.
+		for (var i = 0; i < nodes.length - 1; i++) {
+			linePoint(nodes[i], nodes[i + 1], "red", 2);
+		}
+		lastSt = st;
+		lastEnd = end;
+	};
+drawCanvas();
+var mousePoint={x:0,y:0};
+var selectedPoint;
+function startDrag(e){
+	mousePoint.x=e.offsetX;
+	mousePoint.y=e.offsetY;
+	mousePoint = reFixPosition(mousePoint);
+	for (let index = 0; index < list.length; index++) {
+		const ele = list[index];
 		
 	}
-	context.save();
-	for (var i = 0; i < list.length; i++) {
-		marPoint(list[i], 10);
+}
+function endDrag(){
+	selectedPoint = undefined;
+	drawCanvas();
+}
+function drag(e){
+
+	if(selectedPoint){
+
+		mousePoint.x=e.offsetX;
+		mousePoint.y=e.offsetY;
+		mousePoint = reFixPosition(mousePoint);
+		selectedPoint.x = mousePoint.x;
+		selectedPoint.y = mousePoint.y;
+		drawCanvas();
 	}
 
 
-	//绘制最短路径.
-	for (var i = 0; i < nodes.length - 1; i++) {
-		linePoint(nodes[i], nodes[i + 1], "red", 2);
-	}
+	console.log(mousePoint);
+}
 </script>
 
 </html>

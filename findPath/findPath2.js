@@ -319,9 +319,14 @@
         return result;
     }
     var findPath = function (pointA, pointD, map) {
+        
+        if (pointA === pointD) {
+            return [pointA];
+        }
+
         var root = new RootNodeTree(pointA, pointD, map);
         root.appendTree();
-        console.log(root);
+        // console.log(root);
         return root.getMinPathNodes();
     }
     var PD = {
