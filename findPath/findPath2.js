@@ -135,7 +135,9 @@
 
         this.SPLIT_SYMBOL = "|";
         this.MAX = Infinity;
+        //key: nodeid; value: 与该node相连的所有node.
         this.nodeToRelatedMap = {};
+        //key: Aid|Bid; value: segment
         this.segmentMap = {};
         //地图区域的三角形.
         this.trangleList = [];
@@ -159,7 +161,7 @@
         }
     }
     MapData.prototype.getNodes = function (node) {
-        return this.nodeToRelatedMap[node];
+        return this.nodeToRelatedMap[node.id];
     }
     MapData.prototype.getDist = function (nodeA, nodeB) {
         var segment = this.segmentMap[nodeA.id + this.SPLIT_SYMBOL + nodeB.id];
@@ -186,19 +188,25 @@
      * @param  segment  添加线段到地图.
      */
     MapData.prototype.add = function (segment) {
-        var list = this.nodeToRelatedMap[segment.nodeA];
+        var list = this.nodeToRelatedMap[segment.nodeA.id];
         if (list) {
             list.push(segment.nodeB);
         } else {
             list = [segment.nodeB];
-            this.nodeToRelatedMap[segment.nodeA] = list;
+            this.nodeToRelatedMap[segment.nodeA.id] = list;
         }
         this.segmentMap[segment.nodeA.id + this.SPLIT_SYMBOL + segment.nodeB.id] = segment;
         // this.segmentMap[segment.nodeB.id + this.SPLIT_SYMBOL + segment.nodeA.id] = segment;
     }
-
-
-
+    /**
+     * 
+     * @param  segment  删除地图线段.
+     */
+    MapData.prototype.remove = function (segment) {
+         delete  this.segmentMap[segment.nodeA.id + this.SPLIT_SYMBOL + segment.nodeB.id];
+         delete this.nodeToRelatedMap[segment.nodeA];
+        // this.segmentMap[segment.nodeB.id + this.SPLIT_SYMBOL + segment.nodeA.id] = segment;
+    };
 
     /**
      * 点与点构成的路径树.
