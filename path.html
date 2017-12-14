@@ -29,30 +29,31 @@
 	</style>
 	<script type="text/javascript" src="findPath/findPath2.js" charset="utf-8"></script>
 	<script type="text/javascript" src="findPath/UIRender.js" charset="utf-8"></script>
+	<script type="text/javascript" src="findPath/operator.js" charset="utf-8"></script>
 	<title>findPath</title>
 </head>
 
-<body onmouseup="endDrag()">
-	<div style="display:flex;padding:5rem;">
+<body onmouseup="OP.endDrag()">
+	<div style="display:flex;padding:2rem;">
 		<!-- <div style="width: 80%;display:flex;margin: auto;"></div> -->
-		<canvas id="canvas" onmousemove="drag(event)" onmousedown="startDrag(event)"></canvas>
+		<canvas id="canvas" onmousemove="OP.drag(event)" onmousedown="OP.startDrag(event)"></canvas>
 		<div class="input">
 			Start Point
-			<input type="input" name="" value="0" onkeyup="changeNode()" /> 
+			<input type="input" name="" value="0" onkeyup="OP.changeNode()" /> 
 			End Point
-			<input type="input" name="" value="7" onkeyup="changeNode()" />
+			<input type="input" name="" value="7" onkeyup="OP.changeNode()" />
 
-			<input type="button" name="Add Point" value="Add Point" onclick="addPoint()"/><br/>
+			<input type="button" name="Add Point" value="Add Point" onclick="OP.addPoint()"/><br/>
 			Move Point
-			<input type="radio" name="Point" value="move"  onclick="movePoint()" checked /><br/>
+			<input type="radio" name="Point" value="move-point"  onclick="OP.changeState(this.value)" checked /><br/>
 			Select Point
-			<input type="radio" name="Point" value="select"  onclick="movePoint()"/><br/>
+			<input type="radio" name="Point" value="select-point"  onclick="OP.changeState(this.value)"/><br/>
 			Remove Point
-			<input type="radio" name="Point" value="remove"  onclick="removePoint()"/><br/>
+			<input type="radio" name="Point" value="remove-point"  onclick="OP.changeState(this.value)"/><br/>
 			Concat Point
-			<input type="radio" name="Point" value="concat" onclick="concatPoint()"/><br/>
+			<input type="radio" name="Point" value="concat-point" onclick="OP.changeState(this.value)"/><br/>
 			Cut Line
-			<input type="radio" name="Point" value="cut" onclick="cutLine()"/>
+			<input type="radio" name="Point" value="cut-line" onclick="OP.changeState(this.value)"/>
 		</div>
 	</div>
 
