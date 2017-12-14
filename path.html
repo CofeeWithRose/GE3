@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style>
+		html,
+		body {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			/* font-size: 0.8rem; */
+		}
+
+		.input {
+			width: 10rem;
+			height: 15px;
+			/* margin: 0 auto; */
+			padding: 0 2rem;
+		}
+		input {
+			margin: 1rem 0;
+		
+		}
+		canvas {
+			border: gray solid 1px;
+			border-radius: 10PX;
+		}
+	</style>
+	<script type="text/javascript" src="findPath/findPath2.js" charset="utf-8"></script>
+	<script type="text/javascript" src="findPath/UIRender.js" charset="utf-8"></script>
+	<title>findPath</title>
+</head>
+
+<body onmouseup="endDrag()">
+	<div style="display:flex;padding:5rem;">
+		<!-- <div style="width: 80%;display:flex;margin: auto;"></div> -->
+		<canvas id="canvas" onmousemove="drag(event)" onmousedown="startDrag(event)"></canvas>
+		<div class="input">
+			Start Point
+			<input type="input" name="" value="0" onkeyup="changeNode()" /> 
+			End Point
+			<input type="input" name="" value="7" onkeyup="changeNode()" />
+
+			<input type="button" name="Add Point" value="Add Point" onclick="addPoint()"/><br/>
+			Move Point
+			<input type="radio" name="Point" value="move"  onclick="movePoint()" checked /><br/>
+			Select Point
+			<input type="radio" name="Point" value="select"  onclick="movePoint()"/><br/>
+			Remove Point
+			<input type="radio" name="Point" value="remove"  onclick="removePoint()"/><br/>
+			Concat Point
+			<input type="radio" name="Point" value="concat" onclick="concatPoint()"/><br/>
+			Cut Line
+			<input type="radio" name="Point" value="cut" onclick="cutLine()"/>
+		</div>
+	</div>
+
+	<script src="findPath/pathUI.js" type="text/javascript" charset="utf-8"></script>
+</body>
+
+</html>

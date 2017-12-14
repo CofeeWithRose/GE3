@@ -309,12 +309,12 @@
                 result = now;
             }
         }
-        //没有课到达的路径.
+        //没有可到达的路径.
         if (Infinity === result.toRootNodeDist) {
             throw "no path to dest node。";
         }
         return result;
-    }
+    };
     RootNodeTree.prototype._loadParent = function (nodeTree, array) {
         if (nodeTree) {
             array.unshift(nodeTree.node);
