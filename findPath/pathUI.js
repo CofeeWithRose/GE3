@@ -97,14 +97,7 @@ function startDrag(e) {
         }
     }
 };
-//结束拖拽.
-function endDrag() {
-    if (selectedPoint) {
-        selectedPoint = undefined;
-        drawCanvas();
-    }
-};
-//拖拽节点.
+//拖拽.
 function drag(e) {
 
     if (selectedPoint) {
@@ -118,7 +111,14 @@ function drag(e) {
         // console.log(mousePoint);
     }
 };
-
+//结束拖拽.
+function endDrag() {
+    if (selectedPoint) {
+        selectedPoint = undefined;
+        drawCanvas();
+    }
+};
+//添加节点.
 function addPoint(){
     var p = new PD.Vectort2(1,1, true);
     list.push(p);
